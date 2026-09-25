@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "appId": "448b2df6-d797-4055-9615-a16b36a68c32",
+  "appDisplayName": "Raf-Test-Power-App",
+  "region": "prod",
+  "appType": "CodeApp",
+  "environmentId": "016b7e01-0991-ed36-ac6a-76eaf6107101",
+  "description": "Internal Order Supply App",
+  "buildPath": "./dist",
+  "buildEntryPoint": "index.html",
+  "localAppUrl": "http://localhost:5173",
+  "logoPath": "Default",
+  "connectionReferences": {},
+  "databaseReferences": {
+    "default.cds": {
+      "dataSources": {
+        "catalogueitems": {
+          "entitySetName": "cr9b0_catalogueitems",
+          "logicalName": "cr9b0_catalogueitem",
+          "isHidden": false
+        },
+        "internalorders": {
+          "entitySetName": "cr9b0_internalorders",
+          "logicalName": "cr9b0_internalorder",
+          "isHidden": false
+        },
+        "users": {
+          "entitySetName": "systemusers",
+          "logicalName": "systemuser",
+          "isHidden": false
+        },
+        "securityroles": {
+          "entitySetName": "roles",
+          "logicalName": "role",
+          "isHidden": false
+        }
+      },
+      "environmentVariableName": ""
+    }
+  }
+}

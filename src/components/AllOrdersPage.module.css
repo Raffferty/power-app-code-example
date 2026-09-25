@@ -1,0 +1,15 @@
+.fieldLoading {
+  position: relative;
+  display: inline-flex;
+}
+
+.fieldLoading select {
+  padding-right: 2rem;
+}
+
+.fieldSpinner {
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  transform: translateY(-50%);
+}

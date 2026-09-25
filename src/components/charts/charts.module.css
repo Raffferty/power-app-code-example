@@ -1,0 +1,158 @@
+/* Horizontal bar chart (status bar chart, top items list) */
+.hbarChart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.hbarRow {
+  display: grid;
+  grid-template-columns: 7rem 1fr 2.5rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hbarLabel {
+  font-size: 0.82rem;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hbarLabelRanked {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hbarRank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.hbarTrack {
+  position: relative;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.hbarFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.hbarValue {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: right;
+}
+
+/* Line chart */
+.chartRoot {
+  position: relative;
+}
+
+.chartSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chartTooltip {
+  position: absolute;
+  transform: translate(-50%, -115%);
+  background: #1e2430;
+  color: white;
+  padding: 0.4rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+.chartTooltipLabel {
+  font-weight: 600;
+}
+
+.chartTooltipValue {
+  color: #d0d5dd;
+}
+
+/* Donut chart */
+.donutChart {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.donutSvg {
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+.donutTotalValue {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.donutTotalLabel {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.chartLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  min-width: 140px;
+}
+
+.chartLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+}
+
+.legendSwatch {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legendLabel {
+  color: var(--color-text);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legendValue {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}

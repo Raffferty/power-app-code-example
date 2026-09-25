@@ -1,0 +1,31 @@
+.reportsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.reportCard {
+  padding: 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.reportCardWide {
+  grid-column: 1 / -1;
+}
+
+.reportCardTitle {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+@media (max-width: 860px) {
+  .reportsGrid {
+    grid-template-columns: 1fr;
+  }
+}

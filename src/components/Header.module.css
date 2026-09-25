@@ -1,0 +1,72 @@
+.appHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.appHeaderBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.brandMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.brandTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.appHeaderUser {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.userAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.userName {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+@media (max-width: 480px) {
+  .appHeader {
+    padding: 0.75rem 1rem;
+  }
+
+  .userName {
+    display: none;
+  }
+}

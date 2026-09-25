@@ -1,0 +1,234 @@
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btnPrimary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.btnPrimary:disabled {
+  background: #d0d5dd;
+  cursor: not-allowed;
+}
+
+.btnSecondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background: var(--color-bg);
+}
+
+/* State messages */
+.stateMessage {
+  color: var(--color-text-muted);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.stateMessageLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.stateError {
+  color: #b42318;
+}
+
+/* Page header */
+.pageHeader {
+  margin-bottom: 1.5rem;
+}
+
+.pageHeader h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.pageSubtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.pageHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pageHeaderActions {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* Filter bar */
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.filterSearch,
+.filterSelect {
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.filterSearch {
+  flex: 1;
+  min-width: 220px;
+}
+
+.filterSelect {
+  min-width: 180px;
+}
+
+.filterSearch:focus,
+.filterSelect:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -1px;
+}
+
+/* Form fields (used by both entity modals) */
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.formField label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.formField input,
+.formField textarea {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.formField input:disabled {
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+}
+
+.formField input:focus,
+.formField textarea:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -1px;
+}
+
+.formFieldCheckbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formFieldCheckbox label {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.formFieldCheckbox input {
+  width: auto;
+}
+
+.formError {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.85rem;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+/* Table */
+.tableWrapper {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.ordersTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ordersTable th,
+.ordersTable td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ordersTable th {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ordersTable tbody tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ordersTable tbody tr:last-child {
+  border-bottom: none;
+}
+
+.ordersTable tbody tr:hover {
+  background: var(--color-bg);
+}

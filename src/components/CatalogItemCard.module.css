@@ -1,0 +1,61 @@
+.catalogCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.catalogCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.catalogCardTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.catalogCardCategory {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.availabilityPill {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.isAvailable {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.isUnavailable {
+  background: #f2f4f7;
+  color: #667085;
+}
+
+.catalogCardActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionBtn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+}
