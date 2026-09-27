@@ -98,6 +98,8 @@ export default function App() {
                 <CatalogPage
                   onOrderSubmitted={handleOrderSubmitted}
                   isOrderAdmin={isOrderAdmin}
+                  currentUserEmail={user.userPrincipalName ?? ""}
+                  onNotify={setToastMessage}
                 />
               }
             />

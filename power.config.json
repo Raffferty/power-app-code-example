@@ -10,7 +10,27 @@
   "buildEntryPoint": "index.html",
   "localAppUrl": "http://localhost:5173",
   "logoPath": "Default",
-  "connectionReferences": {},
+  "connectionReferences": {
+    "65ecbc10-068f-4f60-a2fe-44cf61ce8828": {
+      "id": "/providers/microsoft.powerapps/apis/shared_office365",
+      "displayName": "Office 365 Outlook"
+    },
+    "be2deef0-1d40-480e-8133-304b434dbdd7": {
+      "id": "/providers/Microsoft.PowerApps/apis/shared_logicflows",
+      "displayName": "Logic flows",
+      "dataSources": [
+        "sendnotification"
+      ],
+      "workflowDetails": {
+        "workflowEntityId": "9d531f0c-62ba-f111-aaae-70a8a59cf74c",
+        "workflowDisplayName": "Send notification",
+        "workflowName": "0e184465-d7f2-6070-96c5-ed9187b31a32",
+        "dependencies": {
+          "shared_office365": "65ecbc10-068f-4f60-a2fe-44cf61ce8828"
+        }
+      }
+    }
+  },
   "databaseReferences": {
     "default.cds": {
       "dataSources": {

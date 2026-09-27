@@ -108,13 +108,17 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     let cancelled = false
 
     async function loadUsers() {
-      const result = await SystemusersService.getAll({
-        filter: "isdisabled eq false",
-        orderBy: ["fullname asc"],
-        select: ["systemuserid", "fullname"],
-      })
-      if (!cancelled && result.success) {
-        setUsers(result.data ?? [])
+      try {
+        const result = await SystemusersService.getAll({
+          filter: "isdisabled eq false",
+          orderBy: ["fullname asc"],
+          select: ["systemuserid", "fullname"],
+        })
+        if (!cancelled && result.success) {
+          setUsers(result.data ?? [])
+        }
+      } catch {
+        // Assignee dropdown just stays empty; not critical enough to surface as a page error.
       }
     }
 
@@ -132,19 +136,26 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
 
   async function handleStatusChange(order: OrderRecord, next: string) {
     setSavingId(order.cr9b0_internalorderid)
-    const result = await Cr9b0_internalordersService.update(
-      order.cr9b0_internalorderid,
-      {
-        cr9b0_orderstatus: Number(
-          next,
-        ) as Cr9b0_internalorderscr9b0_orderstatus,
-      },
-    )
-    setSavingId(null)
-    if (result.success) {
-      await loadOrders()
-    } else {
-      setError(result.error?.message ?? "Failed to update order status.")
+    try {
+      const result = await Cr9b0_internalordersService.update(
+        order.cr9b0_internalorderid,
+        {
+          cr9b0_orderstatus: Number(
+            next,
+          ) as Cr9b0_internalorderscr9b0_orderstatus,
+        },
+      )
+      if (result.success) {
+        await loadOrders()
+      } else {
+        setError(result.error?.message ?? "Failed to update order status.")
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to update order status.",
+      )
+    } finally {
+      setSavingId(null)
     }
   }
 
@@ -153,18 +164,23 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     nextUserId: string,
   ) {
     setSavingId(order.cr9b0_internalorderid)
-    const payload: OwnerBindPayload = {
-      "ownerid@odata.bind": `/systemusers(${nextUserId})`,
-    }
-    const result = await Cr9b0_internalordersService.update(
-      order.cr9b0_internalorderid,
-      payload as never,
-    )
-    setSavingId(null)
-    if (result.success) {
-      await loadOrders()
-    } else {
-      setError(result.error?.message ?? "Failed to reassign order.")
+    try {
+      const payload: OwnerBindPayload = {
+        "ownerid@odata.bind": `/systemusers(${nextUserId})`,
+      }
+      const result = await Cr9b0_internalordersService.update(
+        order.cr9b0_internalorderid,
+        payload as never,
+      )
+      if (result.success) {
+        await loadOrders()
+      } else {
+        setError(result.error?.message ?? "Failed to reassign order.")
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reassign order.")
+    } finally {
+      setSavingId(null)
     }
   }
 

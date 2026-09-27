@@ -41,29 +41,35 @@ export default function CatalogItemModal({
     setSubmitting(true)
     setError(null)
 
-    const payload = {
-      cr9b0_itemname: itemName.trim(),
-      cr9b0_category: Number(category) as Cr9b0_catalogueitemscr9b0_category,
-      cr9b0_available: available,
-    }
+    try {
+      const payload = {
+        cr9b0_itemname: itemName.trim(),
+        cr9b0_category: Number(category) as Cr9b0_catalogueitemscr9b0_category,
+        cr9b0_available: available,
+      }
 
-    const result = item
-      ? await Cr9b0_catalogueitemsService.update(
-          item.cr9b0_catalogueitemid,
-          payload,
-        )
-      : await Cr9b0_catalogueitemsService.create({
-          ...payload,
-          statecode: 0,
-          statuscode: 1,
-        })
+      const result = item
+        ? await Cr9b0_catalogueitemsService.update(
+            item.cr9b0_catalogueitemid,
+            payload,
+          )
+        : await Cr9b0_catalogueitemsService.create({
+            ...payload,
+            statecode: 0,
+            statuscode: 1,
+          })
 
-    setSubmitting(false)
-
-    if (result.success) {
-      onSuccess()
-    } else {
-      setError(result.error?.message ?? "Failed to save the catalog item.")
+      if (result.success) {
+        onSuccess()
+      } else {
+        setError(result.error?.message ?? "Failed to save the catalog item.")
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to save the catalog item.",
+      )
+    } finally {
+      setSubmitting(false)
     }
   }
 

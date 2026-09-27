@@ -34,30 +34,38 @@ export default function OrderModal({
     setSubmitting(true)
     setError(null)
 
-    const now = new Date()
-    // ownerid/createdby are left unset: Dataverse assigns both to the calling
-    // (currently authenticated) user automatically on create.
-    const result = await Cr9b0_internalordersService.create({
-      "cr9b0_Item@odata.bind": `/cr9b0_catalogueitems(${item.cr9b0_catalogueitemid})`,
-      cr9b0_orderid: `ORD-${now.getTime()}`,
-      cr9b0_deliverylocation: deliveryLocation.trim(),
-      cr9b0_quantity: quantity,
-      cr9b0_neededby: neededBy ? new Date(neededBy).toISOString() : undefined,
-      cr9b0_notes: notes.trim() || undefined,
-      cr9b0_orderdate: now.toISOString(),
-      cr9b0_orderstatus: 930770000,
-      statecode: 0,
-    })
+    try {
+      const now = new Date()
+      // ownerid/createdby are left unset: Dataverse assigns both to the calling
+      // (currently authenticated) user automatically on create.
+      const result = await Cr9b0_internalordersService.create({
+        "cr9b0_Item@odata.bind": `/cr9b0_catalogueitems(${item.cr9b0_catalogueitemid})`,
+        cr9b0_orderid: `ORD-${now.getTime()}`,
+        cr9b0_deliverylocation: deliveryLocation.trim(),
+        cr9b0_quantity: quantity,
+        cr9b0_neededby: neededBy ? new Date(neededBy).toISOString() : undefined,
+        cr9b0_notes: notes.trim() || undefined,
+        cr9b0_orderdate: now.toISOString(),
+        cr9b0_orderstatus: 930770000,
+        statecode: 0,
+      })
 
-    setSubmitting(false)
-
-    if (result.success) {
-      onSuccess()
-    } else {
+      if (result.success) {
+        onSuccess()
+      } else {
+        setError(
+          result.error?.message ??
+            "Failed to submit the order. Please try again.",
+        )
+      }
+    } catch (err) {
       setError(
-        result.error?.message ??
-          "Failed to submit the order. Please try again.",
+        err instanceof Error
+          ? err.message
+          : "Failed to submit the order. Please try again.",
       )
+    } finally {
+      setSubmitting(false)
     }
   }
 

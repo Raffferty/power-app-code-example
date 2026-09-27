@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom"
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemscr9b0_category } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemsService } from "@/generated/services/Cr9b0_catalogueitemsService"
+import { SendnotificationService } from "@/generated/services/SendnotificationService"
 import CatalogItemCard from "./CatalogItemCard"
 import CatalogItemModal from "./CatalogItemModal"
 import OrderModal from "./OrderModal"
@@ -13,11 +14,15 @@ import shared from "@/styles/shared.module.css"
 interface CatalogPageProps {
   onOrderSubmitted: () => void
   isOrderAdmin: boolean
+  currentUserEmail: string
+  onNotify: (message: string) => void
 }
 
 export default function CatalogPage({
   onOrderSubmitted,
   isOrderAdmin,
+  currentUserEmail,
+  onNotify,
 }: CatalogPageProps) {
   const [items, setItems] = useState<Cr9b0_catalogueitems[]>([])
   const [loading, setLoading] = useState(true)
@@ -100,22 +105,48 @@ export default function CatalogPage({
     })
   }, [items, search, category])
 
+  // The catalog item update has already succeeded by the time this runs, so a
+  // failed notification shouldn't be reported as a failed item update.
+  async function notifyToggle(item: Cr9b0_catalogueitems, activating: boolean) {
+    try {
+      const notifyResult = await SendnotificationService.Run({
+        text: currentUserEmail,
+        text_1: `"${item.cr9b0_itemname}" Item in Catalog was ${activating ? "activated" : "deactivated"}.`,
+      })
+      if (notifyResult.success && notifyResult.data?.message) {
+        onNotify(notifyResult.data.message)
+      }
+    } catch {
+      // Ignore notification failures.
+    }
+  }
+
   async function handleToggleActive(item: Cr9b0_catalogueitems) {
     const activating = item.statecode !== 0
     setTogglingId(item.cr9b0_catalogueitemid)
-    const result = await Cr9b0_catalogueitemsService.update(
-      item.cr9b0_catalogueitemid,
-      {
-        statecode: activating ? 0 : 1,
-        statuscode: activating ? 1 : 2,
-      },
-    )
-    if (result.success) {
-      await loadItems()
-    } else {
-      setError(result.error?.message ?? "Failed to update the catalog item.")
+    try {
+      const result = await Cr9b0_catalogueitemsService.update(
+        item.cr9b0_catalogueitemid,
+        {
+          statecode: activating ? 0 : 1,
+          statuscode: activating ? 1 : 2,
+        },
+      )
+      if (result.success) {
+        await loadItems()
+        await notifyToggle(item, activating)
+      } else {
+        setError(result.error?.message ?? "Failed to update the catalog item.")
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to update the catalog item.",
+      )
+    } finally {
+      setTogglingId(null)
     }
-    setTogglingId(null)
   }
 
   return (
@@ -190,7 +221,9 @@ export default function CatalogPage({
         <p className={`${shared.stateMessage} ${shared.stateError}`}>{error}</p>
       )}
       {!loading && !error && filteredItems.length === 0 && (
-        <p className={shared.stateMessage}>No catalog items match your filters.</p>
+        <p className={shared.stateMessage}>
+          No catalog items match your filters.
+        </p>
       )}
 
       {!loading && !error && filteredItems.length > 0 && (
