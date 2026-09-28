@@ -2,8 +2,8 @@ import { useState } from "react"
 import type { SubmitEvent } from "react"
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
-import Modal from "./Modal"
-import Spinner from "./Spinner"
+import Modal from "../Modal"
+import Spinner from "../Spinner"
 import shared from "@/styles/shared.module.css"
 
 interface OrderModalProps {

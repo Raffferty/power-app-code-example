@@ -1,5 +1,5 @@
-import { CATEGORICAL_COLORS } from "./colors"
-import styles from "./charts.module.css"
+import { CATEGORICAL_COLORS } from "../colors"
+import styles from "../charts.module.css"
 
 interface BarChartProps {
   data: Array<{ label: string; value: number }>

@@ -1,4 +1,4 @@
-import styles from "./charts.module.css"
+import styles from "../charts.module.css"
 import shared from "@/styles/shared.module.css"
 
 interface TopItemsListProps {

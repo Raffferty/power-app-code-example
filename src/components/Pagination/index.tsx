@@ -1,4 +1,4 @@
-import Spinner from "./Spinner"
+import Spinner from "../Spinner"
 import styles from "./Pagination.module.css"
 import shared from "@/styles/shared.module.css"
 
