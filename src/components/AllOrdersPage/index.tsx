@@ -274,6 +274,12 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     [users],
   )
 
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem(PAGE_TOKENS_STORAGE_KEY)
+    }
+  }, [])
+
   async function handleStatusChange(order: OrderRecord, next: string) {
     setSavingId(order.cr9b0_internalorderid)
     try {
