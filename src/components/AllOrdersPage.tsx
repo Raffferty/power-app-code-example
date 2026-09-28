@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
 import type { Cr9b0_internalorderscr9b0_orderstatus } from "@/generated/models/Cr9b0_internalordersModel"
@@ -7,11 +7,33 @@ import type { Systemusers } from "@/generated/models/SystemusersModel"
 import type { OrderRecord } from "@/types"
 import { formatDate, getFormattedValue, getRawValue } from "@/types"
 import Spinner from "./Spinner"
+import Pagination from "./Pagination"
+import { scrollToTop } from "@/helpers/scrollToTop"
 import styles from "./AllOrdersPage.module.css"
 import shared from "@/styles/shared.module.css"
 
 interface AllOrdersPageProps {
   refreshKey: number
+}
+
+const PAGE_SIZE = 10
+
+// Dataverse's Web API doesn't support OData $skip on entity-set queries -- paging is
+// forward-only via a $skiptoken (returned as `skipToken` on the result). This map tracks,
+// for each page number reached so far, the skiptoken needed to fetch it (page 1 needs none).
+// It's a ref (not state) since it's only read/written from event handlers and effects, never
+// rendered directly, and mutating it shouldn't itself trigger a re-render.
+type PageTokenMap = Record<number, string>
+
+const PAGE_TOKENS_STORAGE_KEY = "supplyhub:allOrdersPageTokens"
+
+function readStoredPageTokens(): PageTokenMap {
+  try {
+    const raw = sessionStorage.getItem(PAGE_TOKENS_STORAGE_KEY)
+    return raw ? (JSON.parse(raw) as PageTokenMap) : {}
+  } catch {
+    return {}
+  }
 }
 
 const ORDER_STATUS_OPTIONS: Array<{
@@ -34,6 +56,8 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   const [orders, setOrders] = useState<OrderRecord[]>([])
   const [users, setUsers] = useState<Systemusers[]>([])
   const [loading, setLoading] = useState(true)
+  const [pageLoading, setPageLoading] = useState(false)
+  const [hasNextPage, setHasNextPage] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [savingId, setSavingId] = useState<string | null>(null)
 
@@ -42,26 +66,54 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   const assignedToFilter = searchParams.get("assignedTo") ?? "all"
   const dateFrom = searchParams.get("from") ?? ""
   const dateTo = searchParams.get("to") ?? ""
+  const pageParam = Number(searchParams.get("page") ?? "1")
+  const page =
+    Number.isFinite(pageParam) && pageParam >= 1 ? Math.floor(pageParam) : 1
 
-  function updateParams(updates: Record<string, string | null>) {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev)
-        for (const [key, value] of Object.entries(updates)) {
-          if (value === null || value === "") {
-            next.delete(key)
-          } else {
-            next.set(key, value)
-          }
-        }
-        return next
-      },
-      { replace: true },
-    )
+  const pageTokensRef = useRef<PageTokenMap>(readStoredPageTokens())
+  const initialPageRef = useRef(page)
+  // Tracks the filter/refreshKey signature this effect last acted on, rather than a
+  // one-shot boolean -- React StrictMode replays the mount effect a second time with
+  // identical deps, and a plain "ranOnce" flag would already be flipped by then, making
+  // the replay take the "filters changed" branch and wrongly reset to page 1. Comparing
+  // against the last-processed signature makes the replay a no-op (same signature) while
+  // still detecting a genuine filter change (different signature) later.
+  const lastEffectSignatureRef = useRef<string | null>(null)
+
+  function persistPageTokens() {
+    try {
+      sessionStorage.setItem(
+        PAGE_TOKENS_STORAGE_KEY,
+        JSON.stringify(pageTokensRef.current),
+      )
+    } catch {
+      // sessionStorage unavailable (private mode / quota) -- pagination still
+      // works within the session, it just won't survive an iframe reload.
+    }
   }
 
+  const updateParams = useCallback(
+    (updates: Record<string, string | null>) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          for (const [key, value] of Object.entries(updates)) {
+            if (value === null || value === "") {
+              next.delete(key)
+            } else {
+              next.set(key, value)
+            }
+          }
+          return next
+        },
+        { replace: true },
+      )
+    },
+    [setSearchParams],
+  )
+
   /*
-  Converting loadOrders to async/await trips the project's
+  Converting loadPage to async/await trips the project's
   react-hooks/set-state-in-effect lint rule: it
   treats a setState sitting directly in a called
   function's body (even after an await) as a
@@ -71,38 +123,126 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   legitimate deferred case. Converting them would
   fail npm run lint
   */
-  const loadOrders = useCallback(() => {
-    const filterParts: string[] = []
-    if (statusFilter !== "all")
-      filterParts.push(`cr9b0_orderstatus eq ${statusFilter}`)
-    if (assignedToFilter !== "all")
-      filterParts.push(`_ownerid_value eq ${assignedToFilter}`)
-    if (dateFrom)
-      filterParts.push(`cr9b0_orderdate ge ${new Date(dateFrom).toISOString()}`)
-    if (dateTo)
-      filterParts.push(`cr9b0_orderdate le ${new Date(dateTo).toISOString()}`)
+  const loadPage = useCallback(
+    (
+      targetPage: number,
+      token: string | undefined,
+      busySetter: (busy: boolean) => void,
+    ) => {
+      const filterParts: string[] = []
+      if (statusFilter !== "all")
+        filterParts.push(`cr9b0_orderstatus eq ${statusFilter}`)
+      if (assignedToFilter !== "all")
+        filterParts.push(`_ownerid_value eq ${assignedToFilter}`)
+      if (dateFrom)
+        filterParts.push(
+          `cr9b0_orderdate ge ${new Date(dateFrom).toISOString()}`,
+        )
+      if (dateTo)
+        filterParts.push(`cr9b0_orderdate le ${new Date(dateTo).toISOString()}`)
 
-    return Cr9b0_internalordersService.getAll({
-      filter: filterParts.length ? filterParts.join(" and ") : undefined,
-      orderBy: ["cr9b0_orderdate desc"],
-    })
-      .then((result) => {
-        if (result.success) {
-          setOrders(result.data ?? [])
-          setError(null)
-        } else {
-          setError(result.error?.message ?? "Failed to load orders.")
-        }
+      return Cr9b0_internalordersService.getAll({
+        filter: filterParts.length ? filterParts.join(" and ") : undefined,
+        orderBy: ["cr9b0_orderdate desc"],
+        maxPageSize: PAGE_SIZE,
+        skipToken: token,
       })
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : "Failed to load orders.")
-      })
-      .finally(() => setLoading(false))
-  }, [statusFilter, assignedToFilter, dateFrom, dateTo])
+        .then((result) => {
+          if (result.success) {
+            setOrders(result.data ?? [])
+            setError(null)
+            setHasNextPage(Boolean(result.skipToken))
+
+            if (result.skipToken) {
+              pageTokensRef.current[targetPage + 1] = result.skipToken
+            } else {
+              delete pageTokensRef.current[targetPage + 1]
+            }
+
+            persistPageTokens()
+          } else {
+            setError(result.error?.message ?? "Failed to load orders.")
+          }
+        })
+        .catch((err: unknown) => {
+          setError(
+            err instanceof Error ? err.message : "Failed to load orders.",
+          )
+        })
+        .finally(() => busySetter(false))
+    },
+    [statusFilter, assignedToFilter, dateFrom, dateTo],
+  )
+
+  // loadPage/updateParams are read via refs (not listed as effect deps) so this
+  // effect only re-runs when the filters/refreshKey actually change -- their
+  // identity can churn on every render (e.g. if setSearchParams isn't referentially
+  // stable), which would otherwise re-trigger the "filters changed" reset branch
+  // on every navigation, including the page-only navigation from goToPage itself.
+  const loadPageRef = useRef(loadPage)
+  const updateParamsRef = useRef(updateParams)
+  useEffect(() => {
+    loadPageRef.current = loadPage
+    updateParamsRef.current = updateParams
+  })
 
   useEffect(() => {
-    loadOrders()
-  }, [loadOrders, refreshKey])
+    const signature = JSON.stringify([
+      statusFilter,
+      assignedToFilter,
+      dateFrom,
+      dateTo,
+      refreshKey,
+    ])
+    const isMountOrReplay =
+      lastEffectSignatureRef.current === null ||
+      lastEffectSignatureRef.current === signature
+    lastEffectSignatureRef.current = signature
+
+    if (isMountOrReplay) {
+      const initialPage = initialPageRef.current
+      const storedToken =
+        initialPage > 1 ? pageTokensRef.current[initialPage] : undefined
+      if (initialPage > 1 && !storedToken) {
+        // Restored ?page=N with no matching skiptoken (sessionStorage was cleared,
+        // or the page/token got out of sync some other way) -- self-heal to page 1
+        // rather than erroring, same as the "no direct page jump" constraint itself.
+        updateParamsRef.current({ page: null })
+        loadPageRef.current(1, undefined, setLoading)
+      } else {
+        loadPageRef.current(initialPage, storedToken, setLoading)
+      }
+      return
+    }
+
+    // Filters (or refreshKey) genuinely changed -- a skiptoken is only valid for the
+    // exact filter/sort combination it came from, so reset to page 1 and drop the stack.
+    pageTokensRef.current = {}
+    persistPageTokens()
+    updateParamsRef.current({ page: null })
+    loadPageRef.current(1, undefined, setLoading)
+  }, [statusFilter, assignedToFilter, dateFrom, dateTo, refreshKey])
+
+  function goToPage(nextPage: number, token: string | undefined) {
+    setPageLoading(true)
+    updateParams({ page: nextPage === 1 ? null : String(nextPage) })
+    loadPage(nextPage, token, setPageLoading).then(scrollToTop)
+  }
+
+  function handleFirst() {
+    if (page === 1) return
+    goToPage(1, undefined)
+  }
+
+  function handlePrevious() {
+    if (page <= 1) return
+    goToPage(page - 1, pageTokensRef.current[page - 1])
+  }
+
+  function handleNext() {
+    if (!hasNextPage) return
+    goToPage(page + 1, pageTokensRef.current[page + 1])
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -146,7 +286,13 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
         },
       )
       if (result.success) {
-        await loadOrders()
+        // Re-fetch the current page in place -- this is a targeted single-row
+        // edit, not a filter change, so it shouldn't bounce the admin back to page 1.
+        await loadPage(
+          page,
+          page > 1 ? pageTokensRef.current[page] : undefined,
+          () => {},
+        )
       } else {
         setError(result.error?.message ?? "Failed to update order status.")
       }
@@ -173,7 +319,11 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
         payload as never,
       )
       if (result.success) {
-        await loadOrders()
+        await loadPage(
+          page,
+          page > 1 ? pageTokensRef.current[page] : undefined,
+          () => {},
+        )
       } else {
         setError(result.error?.message ?? "Failed to reassign order.")
       }
@@ -192,7 +342,9 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     <section>
       <div className={shared.pageHeader}>
         <h1>All Orders</h1>
-        <p className={shared.pageSubtitle}>Every order across all requesters.</p>
+        <p className={shared.pageSubtitle}>
+          Every order across all requesters.
+        </p>
       </div>
 
       <div className={shared.filterBar}>
@@ -355,6 +507,17 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
             </tbody>
           </table>
         </div>
+      )}
+
+      {!loading && !error && orders.length > 0 && (
+        <Pagination
+          page={page}
+          hasNextPage={hasNextPage}
+          pageLoading={pageLoading}
+          onFirst={handleFirst}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+        />
       )}
     </section>
   )

@@ -35,6 +35,12 @@
 
 .btnSecondary:hover:not(:disabled) {
   background: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+.btnSecondary:disabled {
+  background: #d0d5dd;
+  cursor: not-allowed;
 }
 
 /* State messages */
