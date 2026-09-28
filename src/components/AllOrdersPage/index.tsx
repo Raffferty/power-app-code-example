@@ -16,7 +16,7 @@ interface AllOrdersPageProps {
   refreshKey: number
 }
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 15
 
 // Dataverse's Web API doesn't support OData $skip on entity-set queries -- paging is
 // forward-only via a $skiptoken (returned as `skipToken` on the result). This map tracks,
