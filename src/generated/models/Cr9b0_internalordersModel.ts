@@ -8,12 +8,7 @@ export const Cr9b0_internalorderscr9b0_orderstatus = {
   930770002: 'In Progress',
   930770003: 'Ordered',
   930770004: 'Delivered',
-  930770005: 'Denied',
-  930770006: '6/4/2024 9:00:00 PM',
-  930770007: '6/9/2024 9:00:00 PM',
-  930770008: '6/6/2024 9:00:00 PM',
-  930770009: '6/11/2024 9:00:00 PM',
-  930770010: '6/8/2024 9:00:00 PM'
+  930770005: 'Denied'
 } as const;
 export type Cr9b0_internalorderscr9b0_orderstatus = keyof typeof Cr9b0_internalorderscr9b0_orderstatus;
 export const Cr9b0_internalordersstatecode = {

@@ -25,3 +25,17 @@ dist-ssr
 
 # codemie
 docs/codemie/*
+
+# dataverse plugin
+.env
+.vscode/settings.json
+.claude/mcp_settings.json
+.token_cache.bin
+.dataverse/
+*.snk
+__pycache__/
+*.pyc
+solutions/*.zip
+plugins/**/bin/
+plugins/**/obj/
+
