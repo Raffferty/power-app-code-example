@@ -8,6 +8,7 @@ import CatalogItemCard from "./components/CatalogItemCard"
 import CatalogItemModal from "./components/CatalogItemModal"
 import OrderModal from "./components/OrderModal"
 import BaseButton from "@/components/base/BaseButton"
+import BaseSelect from "@/components/base/BaseSelect"
 import Spinner from "@/components/shared/Spinner"
 import styles from "./CatalogPage.module.css"
 import shared from "@/styles/shared.module.css"
@@ -187,8 +188,8 @@ export default function CatalogPage({
           onChange={(e) => updateParams({ q: e.target.value || null })}
           aria-label="Search catalog by item name"
         />
-        <select
-          className={shared.filterSelect}
+        <BaseSelect
+          className={shared.filterSelectWrapper}
           value={category}
           onChange={(e) =>
             updateParams({
@@ -205,7 +206,7 @@ export default function CatalogPage({
               </option>
             ),
           )}
-        </select>
+        </BaseSelect>
       </div>
 
       {loading && (

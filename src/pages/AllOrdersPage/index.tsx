@@ -7,6 +7,7 @@ import type { Systemusers } from "@/generated/models/SystemusersModel"
 import type { OrderRecord } from "@/types"
 import { formatDate, getFormattedValue, getRawValue } from "@/types"
 import BaseButton from "@/components/base/BaseButton"
+import BaseSelect from "@/components/base/BaseSelect"
 import Spinner from "@/components/shared/Spinner"
 import Pagination from "@/components/shared/Pagination"
 import { scrollToTop } from "@/helpers/scrollToTop"
@@ -60,7 +61,10 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   const [pageLoading, setPageLoading] = useState(false)
   const [hasNextPage, setHasNextPage] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [savingId, setSavingId] = useState<string | null>(null)
+  const [savingCell, setSavingCell] = useState<{
+    orderId: string
+    field: "status" | "assignedTo"
+  } | null>(null)
 
   const [searchParams, setSearchParams] = useSearchParams()
   const statusFilter = searchParams.get("status") ?? "all"
@@ -282,7 +286,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   }, [])
 
   async function handleStatusChange(order: OrderRecord, next: string) {
-    setSavingId(order.cr9b0_internalorderid)
+    setSavingCell({ orderId: order.cr9b0_internalorderid, field: "status" })
     try {
       const result = await Cr9b0_internalordersService.update(
         order.cr9b0_internalorderid,
@@ -308,7 +312,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
         err instanceof Error ? err.message : "Failed to update order status.",
       )
     } finally {
-      setSavingId(null)
+      setSavingCell(null)
     }
   }
 
@@ -316,7 +320,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     order: OrderRecord,
     nextUserId: string,
   ) {
-    setSavingId(order.cr9b0_internalorderid)
+    setSavingCell({ orderId: order.cr9b0_internalorderid, field: "assignedTo" })
     try {
       const payload: OwnerBindPayload = {
         "ownerid@odata.bind": `/systemusers(${nextUserId})`,
@@ -337,7 +341,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to reassign order.")
     } finally {
-      setSavingId(null)
+      setSavingCell(null)
     }
   }
 
@@ -355,8 +359,8 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
       </div>
 
       <div className={shared.filterBar}>
-        <select
-          className={shared.filterSelect}
+        <BaseSelect
+          className={shared.filterSelectWrapper}
           value={statusFilter}
           onChange={(e) =>
             updateParams({
@@ -371,9 +375,9 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
               {opt.label}
             </option>
           ))}
-        </select>
-        <select
-          className={shared.filterSelect}
+        </BaseSelect>
+        <BaseSelect
+          className={shared.filterSelectWrapper}
           value={assignedToFilter}
           onChange={(e) =>
             updateParams({
@@ -388,7 +392,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
               {u.fullname}
             </option>
           ))}
-        </select>
+        </BaseSelect>
         <input
           type="date"
           className={shared.filterSelect}
@@ -454,55 +458,46 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
                   <td>{formatDate(order.cr9b0_orderdate)}</td>
                   <td>{formatDate(order.cr9b0_neededby)}</td>
                   <td>
-                    <span className={styles.fieldLoading}>
-                      <select
-                        className={shared.filterSelect}
-                        value={order.cr9b0_orderstatus ?? ""}
-                        disabled={savingId === order.cr9b0_internalorderid}
-                        onChange={(e) =>
-                          handleStatusChange(order, e.target.value)
-                        }
-                        aria-label={`Status for order ${order.cr9b0_orderid ?? order.cr9b0_internalorderid}`}
-                      >
-                        {ORDER_STATUS_OPTIONS.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                      {savingId === order.cr9b0_internalorderid && (
-                        <span className={styles.fieldSpinner}>
-                          <Spinner size="sm" />
-                        </span>
-                      )}
-                    </span>
+                    <BaseSelect
+                      value={order.cr9b0_orderstatus ?? ""}
+                      loading={
+                        savingCell?.orderId === order.cr9b0_internalorderid &&
+                        savingCell.field === "status"
+                      }
+                      onChange={(e) =>
+                        handleStatusChange(order, e.target.value)
+                      }
+                      aria-label={`Status for order ${order.cr9b0_orderid ?? order.cr9b0_internalorderid}`}
+                    >
+                      {ORDER_STATUS_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </BaseSelect>
                   </td>
                   <td>
-                    <span className={styles.fieldLoading}>
-                      <select
-                        className={shared.filterSelect}
-                        value={getRawValue(order, "_ownerid_value") ?? ""}
-                        disabled={savingId === order.cr9b0_internalorderid}
-                        onChange={(e) =>
-                          handleAssignedToChange(order, e.target.value)
-                        }
-                        aria-label={`Assignee for order ${order.cr9b0_orderid ?? order.cr9b0_internalorderid}`}
-                      >
-                        {!getRawValue(order, "_ownerid_value") && (
-                          <option value="">Unassigned</option>
-                        )}
-                        {userOptions.map((u) => (
-                          <option key={u.systemuserid} value={u.systemuserid}>
-                            {u.fullname}
-                          </option>
-                        ))}
-                      </select>
-                      {savingId === order.cr9b0_internalorderid && (
-                        <span className={styles.fieldSpinner}>
-                          <Spinner size="sm" />
-                        </span>
+                    <BaseSelect
+                      className={styles.assignedToSelect}
+                      value={getRawValue(order, "_ownerid_value") ?? ""}
+                      loading={
+                        savingCell?.orderId === order.cr9b0_internalorderid &&
+                        savingCell.field === "assignedTo"
+                      }
+                      onChange={(e) =>
+                        handleAssignedToChange(order, e.target.value)
+                      }
+                      aria-label={`Assignee for order ${order.cr9b0_orderid ?? order.cr9b0_internalorderid}`}
+                    >
+                      {!getRawValue(order, "_ownerid_value") && (
+                        <option value="">Unassigned</option>
                       )}
-                    </span>
+                      {userOptions.map((u) => (
+                        <option key={u.systemuserid} value={u.systemuserid}>
+                          {u.fullname}
+                        </option>
+                      ))}
+                    </BaseSelect>
                   </td>
                   <td>{getFormattedValue(order, "_createdby_value") ?? "—"}</td>
                 </tr>
