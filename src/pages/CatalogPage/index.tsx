@@ -8,6 +8,7 @@ import CatalogItemCard from "./components/CatalogItemCard"
 import CatalogItemModal from "./components/CatalogItemModal"
 import OrderModal from "./components/OrderModal"
 import BaseButton from "@/components/base/BaseButton"
+import BaseInput from "@/components/base/BaseInput"
 import BaseSelect from "@/components/base/BaseSelect"
 import Spinner from "@/components/shared/Spinner"
 import styles from "./CatalogPage.module.css"
@@ -180,7 +181,7 @@ export default function CatalogPage({
       </div>
 
       <div className={shared.filterBar}>
-        <input
+        <BaseInput
           type="search"
           className={shared.filterSearch}
           placeholder="Search by item name…"

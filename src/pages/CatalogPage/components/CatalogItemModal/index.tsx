@@ -7,6 +7,7 @@ import type {
 import { Cr9b0_catalogueitemscr9b0_category as CATEGORY_LABELS } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemsService } from "@/generated/services/Cr9b0_catalogueitemsService"
 import BaseButton from "@/components/base/BaseButton"
+import BaseInput from "@/components/base/BaseInput"
 import BaseSelect from "@/components/base/BaseSelect"
 import Modal from "@/components/shared/Modal"
 import shared from "@/styles/shared.module.css"
@@ -79,7 +80,7 @@ export default function CatalogItemModal({
       <form onSubmit={handleSubmit} className={shared.modalBody}>
         <div className={shared.formField}>
           <label htmlFor="item-name">Item Name</label>
-          <input
+          <BaseInput
             id="item-name"
             type="text"
             value={itemName}
@@ -105,7 +106,7 @@ export default function CatalogItemModal({
 
         <div className={shared.formFieldCheckbox}>
           <label>
-            <input
+            <BaseInput
               type="checkbox"
               checked={available}
               onChange={(e) => setAvailable(e.target.checked)}

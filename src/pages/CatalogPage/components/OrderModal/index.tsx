@@ -3,6 +3,7 @@ import type { SubmitEvent } from "react"
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
 import BaseButton from "@/components/base/BaseButton"
+import BaseInput from "@/components/base/BaseInput"
 import Modal from "@/components/shared/Modal"
 import shared from "@/styles/shared.module.css"
 
@@ -74,7 +75,7 @@ export default function OrderModal({
       <form onSubmit={handleSubmit} className={shared.modalBody}>
         <div className={shared.formField}>
           <label>Item</label>
-          <input
+          <BaseInput
             type="text"
             value={item.cr9b0_itemname ?? ""}
             readOnly
@@ -84,7 +85,7 @@ export default function OrderModal({
 
         <div className={shared.formField}>
           <label htmlFor="order-quantity">Quantity</label>
-          <input
+          <BaseInput
             id="order-quantity"
             type="number"
             min={1}
@@ -98,7 +99,7 @@ export default function OrderModal({
 
         <div className={shared.formField}>
           <label htmlFor="order-needed-by">Needed By</label>
-          <input
+          <BaseInput
             id="order-needed-by"
             type="date"
             value={neededBy}
@@ -108,7 +109,7 @@ export default function OrderModal({
 
         <div className={shared.formField}>
           <label htmlFor="order-delivery-location">Delivery Location</label>
-          <input
+          <BaseInput
             id="order-delivery-location"
             type="text"
             value={deliveryLocation}

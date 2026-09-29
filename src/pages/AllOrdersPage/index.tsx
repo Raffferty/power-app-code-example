@@ -7,6 +7,7 @@ import type { Systemusers } from "@/generated/models/SystemusersModel"
 import type { OrderRecord } from "@/types"
 import { formatDate, getFormattedValue, getRawValue } from "@/types"
 import BaseButton from "@/components/base/BaseButton"
+import BaseInput from "@/components/base/BaseInput"
 import BaseSelect from "@/components/base/BaseSelect"
 import Spinner from "@/components/shared/Spinner"
 import Pagination from "@/components/shared/Pagination"
@@ -393,14 +394,14 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
             </option>
           ))}
         </BaseSelect>
-        <input
+        <BaseInput
           type="date"
           className={shared.filterSelect}
           value={dateFrom}
           onChange={(e) => updateParams({ from: e.target.value || null })}
           aria-label="Order date from"
         />
-        <input
+        <BaseInput
           type="date"
           className={shared.filterSelect}
           value={dateTo}

@@ -56,16 +56,6 @@
   margin-bottom: 1.5rem;
 }
 
-.filterSearch,
-.filterSelect {
-  padding: 0.55rem 0.85rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
 .filterSearch {
   flex: 1;
   min-width: 220px;
@@ -78,12 +68,6 @@
 .filterSelectWrapper {
   min-width: 180px;
   width: 100%;
-}
-
-.filterSearch:focus,
-.filterSelect:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -1px;
 }
 
 /* Form fields (used by both entity modals) */
@@ -99,7 +83,6 @@
   color: var(--color-text-muted);
 }
 
-.formField input,
 .formField textarea {
   padding: 0.55rem 0.75rem;
   border: 1px solid var(--color-border);
@@ -110,12 +93,6 @@
   background: var(--color-surface);
 }
 
-.formField input:disabled {
-  background: var(--color-bg);
-  color: var(--color-text-muted);
-}
-
-.formField input:focus,
 .formField textarea:focus {
   outline: 2px solid var(--color-primary);
   outline-offset: -1px;
@@ -131,10 +108,6 @@
 .formFieldCheckbox label {
   color: var(--color-text);
   font-weight: 500;
-}
-
-.formFieldCheckbox input {
-  width: auto;
 }
 
 .formError {
