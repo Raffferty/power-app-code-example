@@ -86,7 +86,7 @@ player wipes the URL hash/path. `App.tsx` persists the last route to `sessionSto
 
 ### UI structure
 
-Route components live in `src/components/` (`CatalogPage`, `MyOrdersPage`, `AllOrdersPage`,
+Route components live in `src/pages/` (`CatalogPage`, `MyOrdersPage`, `AllOrdersPage`,
 `ReportsPage`), each paired with a CSS module (`*.module.css`); shared cross-page styles are
 in `src/styles/shared.module.css`. `ReportsPage` composes chart primitives from
 `src/components/charts/` (`BarChart`, `DonutChart`, `LineChart`, `TopItemsList`, shared
