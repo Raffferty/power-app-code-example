@@ -1,0 +1,87 @@
+.button {
+  min-width: 90px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+}
+
+/* Keyboard-only focus ring; mouse/touch clicks don't trigger :focus-visible. */
+.button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sm {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.iconOnly {
+  padding: 0.35rem;
+  gap: 0;
+}
+
+/* Primary: filled */
+.primary {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.primary:disabled {
+  background: #d0d5dd;
+  color: #ffffff;
+}
+
+/* Secondary: outline */
+.secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+.secondary:disabled {
+  background: #d0d5dd;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+/* Ghost: borderless, for low-emphasis/icon actions (e.g. a modal close button) */
+.ghost {
+  min-width: 36px;
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.ghost:disabled {
+  color: var(--color-border);
+}

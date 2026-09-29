@@ -2,8 +2,8 @@ import { useState } from "react"
 import type { SubmitEvent } from "react"
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
+import BaseButton from "@/components/base/BaseButton"
 import Modal from "@/components/shared/Modal"
-import Spinner from "@/components/shared/Spinner"
 import shared from "@/styles/shared.module.css"
 
 interface OrderModalProps {
@@ -132,22 +132,12 @@ export default function OrderModal({
         {error && <p className={shared.formError}>{error}</p>}
 
         <div className={shared.modalActions}>
-          <button
-            type="button"
-            className={`${shared.btn} ${shared.btnSecondary}`}
-            onClick={onClose}
-            disabled={submitting}
-          >
+          <BaseButton variant="secondary" onClick={onClose} disabled={submitting}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            className={`${shared.btn} ${shared.btnPrimary}`}
-            disabled={submitting}
-          >
-            {submitting && <Spinner size="sm" variant="light" />}
+          </BaseButton>
+          <BaseButton type="submit" variant="primary" loading={submitting}>
             {submitting ? "Submitting…" : "Submit Order"}
-          </button>
+          </BaseButton>
         </div>
       </form>
     </Modal>

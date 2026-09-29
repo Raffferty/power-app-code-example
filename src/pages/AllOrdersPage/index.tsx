@@ -6,6 +6,7 @@ import { SystemusersService } from "@/generated/services/SystemusersService"
 import type { Systemusers } from "@/generated/models/SystemusersModel"
 import type { OrderRecord } from "@/types"
 import { formatDate, getFormattedValue, getRawValue } from "@/types"
+import BaseButton from "@/components/base/BaseButton"
 import Spinner from "@/components/shared/Spinner"
 import Pagination from "@/components/shared/Pagination"
 import { scrollToTop } from "@/helpers/scrollToTop"
@@ -406,13 +407,9 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
           assignedToFilter !== "all" ||
           dateFrom ||
           dateTo) && (
-          <button
-            type="button"
-            className={`${shared.btn} ${shared.btnSecondary}`}
-            onClick={clearFilters}
-          >
+          <BaseButton variant="secondary" onClick={clearFilters}>
             Clear filters
-          </button>
+          </BaseButton>
         )}
       </div>
 

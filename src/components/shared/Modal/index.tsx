@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, type ReactNode } from "react"
 import { createPortal } from "react-dom"
+import BaseButton from "@/components/base/BaseButton"
 import styles from "./Modal.module.css"
 
 interface ModalProps {
@@ -80,14 +81,15 @@ export default function Modal({ title, onClose, children }: ModalProps) {
       <div className={styles.modal} ref={containerRef} tabIndex={-1}>
         <div className={styles.modalHeader}>
           <h2 id={titleId}>{title}</h2>
-          <button
-            type="button"
-            className={styles.modalClose}
+          <BaseButton
+            variant="ghost"
+            iconOnly
+            className={styles.modalCloseGlyph}
             aria-label="Close"
             onClick={onClose}
           >
             ×
-          </button>
+          </BaseButton>
         </div>
         {children}
       </div>

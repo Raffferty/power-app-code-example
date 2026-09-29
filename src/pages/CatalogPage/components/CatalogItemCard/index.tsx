@@ -1,9 +1,8 @@
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemscr9b0_category } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { getFormattedValue } from "@/types"
-import Spinner from "@/components/shared/Spinner"
+import BaseButton from "@/components/base/BaseButton"
 import styles from "./CatalogItemCard.module.css"
-import shared from "@/styles/shared.module.css"
 
 interface CatalogItemCardProps {
   item: Cr9b0_catalogueitems
@@ -45,21 +44,20 @@ export default function CatalogItemCard({
       </div>
       {manageMode ? (
         <div className={styles.catalogCardActions}>
-          <button
-            type="button"
-            className={`${shared.btn} ${shared.btnSecondary} ${styles.actionBtn}`}
+          <BaseButton
+            variant="secondary"
+            size="sm"
             onClick={onEdit}
             disabled={isToggling}
           >
             Edit
-          </button>
-          <button
-            type="button"
-            className={`${shared.btn} ${shared.btnSecondary} ${styles.actionBtn}`}
+          </BaseButton>
+          <BaseButton
+            variant="secondary"
+            size="sm"
             onClick={onToggleActive}
-            disabled={isToggling}
+            loading={isToggling}
           >
-            {isToggling && <Spinner size="sm" />}
             {isToggling
               ? isActive
                 ? "Deactivating…"
@@ -67,17 +65,12 @@ export default function CatalogItemCard({
               : isActive
                 ? "Deactivate"
                 : "Activate"}
-          </button>
+          </BaseButton>
         </div>
       ) : (
-        <button
-          type="button"
-          className={`${shared.btn} ${shared.btnPrimary}`}
-          disabled={!available}
-          onClick={onOrder}
-        >
+        <BaseButton variant="primary" disabled={!available} onClick={onOrder}>
           Order
-        </button>
+        </BaseButton>
       )}
     </div>
   )

@@ -6,8 +6,8 @@ import type {
 } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemscr9b0_category as CATEGORY_LABELS } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemsService } from "@/generated/services/Cr9b0_catalogueitemsService"
+import BaseButton from "@/components/base/BaseButton"
 import Modal from "@/components/shared/Modal"
-import Spinner from "@/components/shared/Spinner"
 import shared from "@/styles/shared.module.css"
 
 interface CatalogItemModalProps {
@@ -116,22 +116,12 @@ export default function CatalogItemModal({
         {error && <p className={shared.formError}>{error}</p>}
 
         <div className={shared.modalActions}>
-          <button
-            type="button"
-            className={`${shared.btn} ${shared.btnSecondary}`}
-            onClick={onClose}
-            disabled={submitting}
-          >
+          <BaseButton variant="secondary" onClick={onClose} disabled={submitting}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            className={`${shared.btn} ${shared.btnPrimary}`}
-            disabled={submitting}
-          >
-            {submitting && <Spinner size="sm" variant="light" />}
+          </BaseButton>
+          <BaseButton type="submit" variant="primary" loading={submitting}>
             {submitting ? "Saving…" : "Save"}
-          </button>
+          </BaseButton>
         </div>
       </form>
     </Modal>

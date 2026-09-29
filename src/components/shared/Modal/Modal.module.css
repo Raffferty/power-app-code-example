@@ -33,12 +33,7 @@
   font-weight: 600;
 }
 
-.modalClose {
-  border: none;
-  background: transparent;
+.modalCloseGlyph {
   font-size: 1.4rem;
   line-height: 1;
-  cursor: pointer;
-  color: var(--color-text-muted);
-  padding: 0.1rem 0.4rem;
 }

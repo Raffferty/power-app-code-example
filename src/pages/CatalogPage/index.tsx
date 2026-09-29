@@ -7,6 +7,7 @@ import { SendnotificationService } from "@/generated/services/SendnotificationSe
 import CatalogItemCard from "./components/CatalogItemCard"
 import CatalogItemModal from "./components/CatalogItemModal"
 import OrderModal from "./components/OrderModal"
+import BaseButton from "@/components/base/BaseButton"
 import Spinner from "@/components/shared/Spinner"
 import styles from "./CatalogPage.module.css"
 import shared from "@/styles/shared.module.css"
@@ -163,21 +164,16 @@ export default function CatalogPage({
         {isOrderAdmin && (
           <div className={shared.pageHeaderActions}>
             {manageMode && (
-              <button
-                type="button"
-                className={`${shared.btn} ${shared.btnPrimary}`}
-                onClick={() => setCreatingItem(true)}
-              >
+              <BaseButton variant="primary" onClick={() => setCreatingItem(true)}>
                 + Add Item
-              </button>
+              </BaseButton>
             )}
-            <button
-              type="button"
-              className={`${shared.btn} ${manageMode ? shared.btnPrimary : shared.btnSecondary}`}
+            <BaseButton
+              variant={manageMode ? "primary" : "secondary"}
               onClick={() => updateParams({ manage: manageMode ? null : "1" })}
             >
               {manageMode ? "Done Managing" : "Manage"}
-            </button>
+            </BaseButton>
           </div>
         )}
       </div>

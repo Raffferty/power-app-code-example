@@ -1,6 +1,6 @@
+import BaseButton from "@/components/base/BaseButton"
 import Spinner from "../Spinner"
 import styles from "./Pagination.module.css"
-import shared from "@/styles/shared.module.css"
 
 interface PaginationProps {
   page: number
@@ -21,34 +21,31 @@ export default function Pagination({
 }: PaginationProps) {
   return (
     <div className={styles.pagination}>
-      <button
-        type="button"
-        className={`${shared.btn} ${shared.btnSecondary}`}
+      <BaseButton
+        variant="secondary"
         onClick={onFirst}
         disabled={page === 1 || pageLoading}
       >
         First
-      </button>
-      <button
-        type="button"
-        className={`${shared.btn} ${shared.btnSecondary}`}
+      </BaseButton>
+      <BaseButton
+        variant="secondary"
         onClick={onPrevious}
         disabled={page === 1 || pageLoading}
       >
         Previous
-      </button>
+      </BaseButton>
       <span className={styles.pageIndicator}>
         Page {page}
         {pageLoading && <Spinner size="sm" />}
       </span>
-      <button
-        type="button"
-        className={`${shared.btn} ${shared.btnSecondary}`}
+      <BaseButton
+        variant="secondary"
         onClick={onNext}
         disabled={!hasNextPage || pageLoading}
       >
         Next
-      </button>
+      </BaseButton>
     </div>
   )
 }
