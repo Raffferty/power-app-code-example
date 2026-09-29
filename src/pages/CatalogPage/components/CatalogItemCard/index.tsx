@@ -1,7 +1,7 @@
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemscr9b0_category } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { getFormattedValue } from "@/types"
-import Spinner from "../Spinner"
+import Spinner from "@/components/shared/Spinner"
 import styles from "./CatalogItemCard.module.css"
 import shared from "@/styles/shared.module.css"
 

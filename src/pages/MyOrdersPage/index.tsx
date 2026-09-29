@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
 import type { OrderRecord } from "@/types"
 import { formatDate, getFormattedValue } from "@/types"
-import Spinner from "@/components/Spinner"
-import StatusBadge from "@/components/StatusBadge"
+import Spinner from "@/components/shared/Spinner"
+import StatusBadge from "@/components/shared/StatusBadge"
 import shared from "@/styles/shared.module.css"
 
 interface MyOrdersPageProps {

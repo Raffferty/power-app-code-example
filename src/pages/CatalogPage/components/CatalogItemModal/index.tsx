@@ -6,8 +6,8 @@ import type {
 } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemscr9b0_category as CATEGORY_LABELS } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemsService } from "@/generated/services/Cr9b0_catalogueitemsService"
-import Modal from "../Modal"
-import Spinner from "../Spinner"
+import Modal from "@/components/shared/Modal"
+import Spinner from "@/components/shared/Spinner"
 import shared from "@/styles/shared.module.css"
 
 interface CatalogItemModalProps {

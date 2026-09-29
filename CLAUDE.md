@@ -88,9 +88,14 @@ player wipes the URL hash/path. `App.tsx` persists the last route to `sessionSto
 
 Route components live in `src/pages/` (`CatalogPage`, `MyOrdersPage`, `AllOrdersPage`,
 `ReportsPage`), each paired with a CSS module (`*.module.css`); shared cross-page styles are
-in `src/styles/shared.module.css`. `ReportsPage` composes chart primitives from
-`src/components/charts/` (`BarChart`, `DonutChart`, `LineChart`, `TopItemsList`, shared
-`colors.ts`). Path alias `@/*` → `src/*` (set in both `vite.config.ts` and
+in `src/styles/shared.module.css`. Components used by only one page live alongside it (e.g.
+`src/pages/CatalogPage/components/`); components used by two or more places live in
+`src/components/shared/` (e.g. `Spinner`, `Modal`, `Pagination`, and the chart primitives in
+`src/components/shared/charts/` — `BarChart`, `DonutChart`, `LineChart`, `TopItemsList`, shared
+`colors.ts`). App-shell chrome (`Header`, `Sidebar`) lives in `src/components/layout/`; route
+guards (`ProtectedRoute`) live in `src/components/guards/`. `src/components/base/` is
+reserved for future atomic UI primitives (buttons, inputs). Path alias `@/*` → `src/*` (set
+in both `vite.config.ts` and
 `tsconfig.app.json`) — prefer it over relative `../../` imports.
 
 ### Config files
