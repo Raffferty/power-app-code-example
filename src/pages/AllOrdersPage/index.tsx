@@ -377,13 +377,27 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   return (
     <section>
       <div className={shared.pageHeader}>
-        <h1>All Orders</h1>
-        <p className={shared.pageSubtitle}>
-          Every order across all requesters.
-        </p>
+        <div className={styles.clearFiltersWrapper}>
+          <div>
+            <h1>All Orders</h1>
+
+            <p className={shared.pageSubtitle}>
+              Every order across all requesters.
+            </p>
+          </div>
+
+          {(statusFilter !== "all" ||
+            assignedToFilter !== "all" ||
+            dateFrom ||
+            dateTo) && (
+            <BaseButton variant="secondary" onClick={clearFilters}>
+              Clear filters
+            </BaseButton>
+          )}
+        </div>
       </div>
 
-      <div className={shared.filterBar}>
+      <div className={styles.filterGrid}>
         <Select<SelectOption>
           className={shared.filterSelectWrapper}
           classNamePrefix="rs"
@@ -421,28 +435,24 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
           }
           aria-label="Filter by assigned to"
         />
+
         <BaseInput
           type="date"
           className={shared.filterSelect}
           value={dateFrom}
           onChange={(e) => updateParams({ from: e.target.value || null })}
           aria-label="Order date from"
+          helperText="Date from:"
         />
+
         <BaseInput
           type="date"
           className={shared.filterSelect}
           value={dateTo}
           onChange={(e) => updateParams({ to: e.target.value || null })}
           aria-label="Order date to"
+          helperText="Date to:"
         />
-        {(statusFilter !== "all" ||
-          assignedToFilter !== "all" ||
-          dateFrom ||
-          dateTo) && (
-          <BaseButton variant="secondary" onClick={clearFilters}>
-            Clear filters
-          </BaseButton>
-        )}
       </div>
 
       {loading && (
