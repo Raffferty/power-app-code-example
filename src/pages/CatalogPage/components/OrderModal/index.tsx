@@ -4,6 +4,7 @@ import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueite
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
 import BaseButton from "@/components/base/BaseButton"
 import BaseInput from "@/components/base/BaseInput"
+import BaseTextarea from "@/components/base/BaseTextarea"
 import Modal from "@/components/shared/Modal"
 import shared from "@/styles/shared.module.css"
 
@@ -120,9 +121,9 @@ export default function OrderModal({
         </div>
 
         <div className={shared.formField}>
-          <label htmlFor="order-notes">Notes</label>
-          <textarea
+          <BaseTextarea
             id="order-notes"
+            label="Notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}

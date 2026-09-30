@@ -83,21 +83,6 @@
   color: var(--color-text-muted);
 }
 
-.formField textarea {
-  padding: 0.55rem 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-family: inherit;
-  color: var(--color-text);
-  background: var(--color-surface);
-}
-
-.formField textarea:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -1px;
-}
-
 .formFieldCheckbox {
   display: flex;
   flex-direction: row;
