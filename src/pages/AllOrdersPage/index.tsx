@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
+import Select from "react-select"
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
 import type { Cr9b0_internalorderscr9b0_orderstatus } from "@/generated/models/Cr9b0_internalordersModel"
 import { SystemusersService } from "@/generated/services/SystemusersService"
@@ -8,10 +9,10 @@ import type { OrderRecord } from "@/types"
 import { formatDate, getFormattedValue, getRawValue } from "@/types"
 import BaseButton from "@/components/base/BaseButton"
 import BaseInput from "@/components/base/BaseInput"
-import BaseSelect from "@/components/base/BaseSelect"
 import Spinner from "@/components/shared/Spinner"
 import Pagination from "@/components/shared/Pagination"
 import { scrollToTop } from "@/helpers/scrollToTop"
+import { selectStyles, type SelectOption } from "@/styles/reactSelectStyles"
 import styles from "./AllOrdersPage.module.css"
 import shared from "@/styles/shared.module.css"
 
@@ -49,6 +50,15 @@ const ORDER_STATUS_OPTIONS: Array<{
   { value: 930770003, label: "Ordered" },
   { value: 930770004, label: "Delivered" },
   { value: 930770005, label: "Denied" },
+]
+
+const ORDER_STATUS_SELECT_OPTIONS: SelectOption[] = ORDER_STATUS_OPTIONS.map(
+  (opt) => ({ value: String(opt.value), label: opt.label }),
+)
+
+const STATUS_FILTER_OPTIONS: SelectOption[] = [
+  { value: "all", label: "All statuses" },
+  ...ORDER_STATUS_SELECT_OPTIONS,
 ]
 
 // The ownerid lookup bind is omitted from the generated Base type (Owner-type
@@ -280,6 +290,20 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     [users],
   )
 
+  const userSelectOptions: SelectOption[] = useMemo(
+    () =>
+      userOptions.map((u) => ({
+        value: u.systemuserid,
+        label: u.fullname ?? "",
+      })),
+    [userOptions],
+  )
+
+  const assignedToFilterOptions: SelectOption[] = useMemo(
+    () => [{ value: "all", label: "All assignees" }, ...userSelectOptions],
+    [userSelectOptions],
+  )
+
   useEffect(() => {
     return () => {
       sessionStorage.removeItem(PAGE_TOKENS_STORAGE_KEY)
@@ -360,40 +384,43 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
       </div>
 
       <div className={shared.filterBar}>
-        <BaseSelect
+        <Select<SelectOption>
           className={shared.filterSelectWrapper}
-          value={statusFilter}
-          onChange={(e) =>
+          classNamePrefix="rs"
+          styles={selectStyles}
+          menuPortalTarget={document.body}
+          isSearchable={false}
+          options={STATUS_FILTER_OPTIONS}
+          value={
+            STATUS_FILTER_OPTIONS.find((opt) => opt.value === statusFilter) ??
+            STATUS_FILTER_OPTIONS[0]
+          }
+          onChange={(option) =>
             updateParams({
-              status: e.target.value === "all" ? null : e.target.value,
+              status: !option || option.value === "all" ? null : option.value,
             })
           }
           aria-label="Filter by status"
-        >
-          <option value="all">All statuses</option>
-          {ORDER_STATUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </BaseSelect>
-        <BaseSelect
+        />
+        <Select<SelectOption>
           className={shared.filterSelectWrapper}
-          value={assignedToFilter}
-          onChange={(e) =>
+          classNamePrefix="rs"
+          styles={selectStyles}
+          menuPortalTarget={document.body}
+          options={assignedToFilterOptions}
+          value={
+            assignedToFilterOptions.find(
+              (opt) => opt.value === assignedToFilter,
+            ) ?? assignedToFilterOptions[0]
+          }
+          onChange={(option) =>
             updateParams({
-              assignedTo: e.target.value === "all" ? null : e.target.value,
+              assignedTo:
+                !option || option.value === "all" ? null : option.value,
             })
           }
           aria-label="Filter by assigned to"
-        >
-          <option value="all">All assignees</option>
-          {userOptions.map((u) => (
-            <option key={u.systemuserid} value={u.systemuserid}>
-              {u.fullname}
-            </option>
-          ))}
-        </BaseSelect>
+        />
         <BaseInput
           type="date"
           className={shared.filterSelect}
@@ -459,46 +486,71 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
                   <td>{formatDate(order.cr9b0_orderdate)}</td>
                   <td>{formatDate(order.cr9b0_neededby)}</td>
                   <td>
-                    <BaseSelect
-                      value={order.cr9b0_orderstatus ?? ""}
-                      loading={
+                    <Select<SelectOption>
+                      className={styles.statusSelect}
+                      classNamePrefix="rs"
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      isSearchable={false}
+                      isLoading={
                         savingCell?.orderId === order.cr9b0_internalorderid &&
                         savingCell.field === "status"
                       }
-                      onChange={(e) =>
-                        handleStatusChange(order, e.target.value)
+                      isDisabled={
+                        savingCell?.orderId === order.cr9b0_internalorderid &&
+                        savingCell.field === "status"
+                      }
+                      options={ORDER_STATUS_SELECT_OPTIONS}
+                      value={
+                        ORDER_STATUS_SELECT_OPTIONS.find(
+                          (opt) =>
+                            opt.value === String(order.cr9b0_orderstatus ?? ""),
+                        ) ?? null
+                      }
+                      onChange={(option) =>
+                        option && handleStatusChange(order, option.value)
                       }
                       aria-label={`Status for order ${order.cr9b0_orderid ?? order.cr9b0_internalorderid}`}
-                    >
-                      {ORDER_STATUS_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </BaseSelect>
+                    />
                   </td>
                   <td>
-                    <BaseSelect
+                    <Select<SelectOption>
                       className={styles.assignedToSelect}
-                      value={getRawValue(order, "_ownerid_value") ?? ""}
-                      loading={
+                      classNamePrefix="rs"
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      isSearchable={false}
+                      isLoading={
                         savingCell?.orderId === order.cr9b0_internalorderid &&
                         savingCell.field === "assignedTo"
                       }
-                      onChange={(e) =>
-                        handleAssignedToChange(order, e.target.value)
+                      isDisabled={
+                        savingCell?.orderId === order.cr9b0_internalorderid &&
+                        savingCell.field === "assignedTo"
+                      }
+                      options={
+                        getRawValue(order, "_ownerid_value")
+                          ? userSelectOptions
+                          : [
+                              { value: "", label: "Unassigned" },
+                              ...userSelectOptions,
+                            ]
+                      }
+                      value={
+                        [
+                          { value: "", label: "Unassigned" },
+                          ...userSelectOptions,
+                        ].find(
+                          (opt) =>
+                            opt.value ===
+                            (getRawValue(order, "_ownerid_value") ?? ""),
+                        ) ?? null
+                      }
+                      onChange={(option) =>
+                        option && handleAssignedToChange(order, option.value)
                       }
                       aria-label={`Assignee for order ${order.cr9b0_orderid ?? order.cr9b0_internalorderid}`}
-                    >
-                      {!getRawValue(order, "_ownerid_value") && (
-                        <option value="">Unassigned</option>
-                      )}
-                      {userOptions.map((u) => (
-                        <option key={u.systemuserid} value={u.systemuserid}>
-                          {u.fullname}
-                        </option>
-                      ))}
-                    </BaseSelect>
+                    />
                   </td>
                   <td>{getFormattedValue(order, "_createdby_value") ?? "—"}</td>
                 </tr>

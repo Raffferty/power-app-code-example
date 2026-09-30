@@ -1,5 +1,6 @@
 import { useState } from "react"
 import type { SubmitEvent } from "react"
+import Select from "react-select"
 import type {
   Cr9b0_catalogueitems,
   Cr9b0_catalogueitemscr9b0_category,
@@ -8,9 +9,13 @@ import { Cr9b0_catalogueitemscr9b0_category as CATEGORY_LABELS } from "@/generat
 import { Cr9b0_catalogueitemsService } from "@/generated/services/Cr9b0_catalogueitemsService"
 import BaseButton from "@/components/base/BaseButton"
 import BaseInput from "@/components/base/BaseInput"
-import BaseSelect from "@/components/base/BaseSelect"
 import Modal from "@/components/shared/Modal"
+import { selectStyles, type SelectOption } from "@/styles/reactSelectStyles"
 import shared from "@/styles/shared.module.css"
+
+const CATEGORY_OPTIONS: SelectOption[] = Object.entries(CATEGORY_LABELS).map(
+  ([value, label]) => ({ value, label: String(label) }),
+)
 
 interface CatalogItemModalProps {
   item: Cr9b0_catalogueitems | null
@@ -91,17 +96,18 @@ export default function CatalogItemModal({
 
         <div className={shared.formField}>
           <label htmlFor="item-category">Category</label>
-          <BaseSelect
-            id="item-category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </BaseSelect>
+          <Select<SelectOption>
+            inputId="item-category"
+            classNamePrefix="rs"
+            styles={selectStyles}
+            menuPortalTarget={document.body}
+            isSearchable={false}
+            options={CATEGORY_OPTIONS}
+            value={
+              CATEGORY_OPTIONS.find((opt) => opt.value === category) ?? null
+            }
+            onChange={(option) => setCategory(option?.value ?? "")}
+          />
         </div>
 
         <div className={shared.formFieldCheckbox}>

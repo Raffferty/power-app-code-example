@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router-dom"
+import Select from "react-select"
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemscr9b0_category } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_catalogueitemsService } from "@/generated/services/Cr9b0_catalogueitemsService"
@@ -9,10 +10,17 @@ import CatalogItemModal from "./components/CatalogItemModal"
 import OrderModal from "./components/OrderModal"
 import BaseButton from "@/components/base/BaseButton"
 import BaseInput from "@/components/base/BaseInput"
-import BaseSelect from "@/components/base/BaseSelect"
 import Spinner from "@/components/shared/Spinner"
+import { selectStyles, type SelectOption } from "@/styles/reactSelectStyles"
 import styles from "./CatalogPage.module.css"
 import shared from "@/styles/shared.module.css"
+
+const CATEGORY_FILTER_OPTIONS: SelectOption[] = [
+  { value: "all", label: "All categories" },
+  ...Object.entries(Cr9b0_catalogueitemscr9b0_category).map(
+    ([value, label]) => ({ value, label: String(label) }),
+  ),
+]
 
 interface CatalogPageProps {
   onOrderSubmitted: () => void
@@ -189,25 +197,25 @@ export default function CatalogPage({
           onChange={(e) => updateParams({ q: e.target.value || null })}
           aria-label="Search catalog by item name"
         />
-        <BaseSelect
+        <Select<SelectOption>
           className={shared.filterSelectWrapper}
-          value={category}
-          onChange={(e) =>
+          classNamePrefix="rs"
+          styles={selectStyles}
+          menuPortalTarget={document.body}
+          isSearchable={false}
+          options={CATEGORY_FILTER_OPTIONS}
+          value={
+            CATEGORY_FILTER_OPTIONS.find((opt) => opt.value === category) ??
+            CATEGORY_FILTER_OPTIONS[0]
+          }
+          onChange={(option) =>
             updateParams({
-              category: e.target.value === "all" ? null : e.target.value,
+              category:
+                !option || option.value === "all" ? null : option.value,
             })
           }
           aria-label="Filter by category"
-        >
-          <option value="all">All categories</option>
-          {Object.entries(Cr9b0_catalogueitemscr9b0_category).map(
-            ([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ),
-          )}
-        </BaseSelect>
+        />
       </div>
 
       {loading && (
