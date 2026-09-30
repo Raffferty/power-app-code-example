@@ -1,5 +1,6 @@
 import { useState } from "react"
-import type { SubmitEvent } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import type { Cr9b0_catalogueitems } from "@/generated/models/Cr9b0_catalogueitemsModel"
 import { Cr9b0_internalordersService } from "@/generated/services/Cr9b0_internalordersService"
 import BaseButton from "@/components/base/BaseButton"
@@ -7,6 +8,7 @@ import BaseInput from "@/components/base/BaseInput"
 import BaseTextarea from "@/components/base/BaseTextarea"
 import Modal from "@/components/shared/Modal"
 import shared from "@/styles/shared.module.css"
+import { orderSchema, type OrderFormInput, type OrderFormValues } from "./schema"
 
 interface OrderModalProps {
   item: Cr9b0_catalogueitems
@@ -19,21 +21,24 @@ export default function OrderModal({
   onClose,
   onSuccess,
 }: OrderModalProps) {
-  const [quantity, setQuantity] = useState(1)
-  const [neededBy, setNeededBy] = useState("")
-  const [deliveryLocation, setDeliveryLocation] = useState("")
-  const [notes, setNotes] = useState("")
-  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<OrderFormInput, unknown, OrderFormValues>({
+    resolver: zodResolver(orderSchema),
+    mode: "onTouched",
+    reValidateMode: "onChange",
+    defaultValues: {
+      quantity: 1,
+      neededBy: "",
+      deliveryLocation: "",
+      notes: "",
+    },
+  })
 
-  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!deliveryLocation.trim()) {
-      setError("Delivery location is required.")
-      return
-    }
-
-    setSubmitting(true)
+  async function onSubmit(data: OrderFormValues) {
     setError(null)
 
     try {
@@ -43,10 +48,12 @@ export default function OrderModal({
       const result = await Cr9b0_internalordersService.create({
         "cr9b0_Item@odata.bind": `/cr9b0_catalogueitems(${item.cr9b0_catalogueitemid})`,
         cr9b0_orderid: `ORD-${now.getTime()}`,
-        cr9b0_deliverylocation: deliveryLocation.trim(),
-        cr9b0_quantity: quantity,
-        cr9b0_neededby: neededBy ? new Date(neededBy).toISOString() : undefined,
-        cr9b0_notes: notes.trim() || undefined,
+        cr9b0_deliverylocation: data.deliveryLocation.trim(),
+        cr9b0_quantity: data.quantity,
+        cr9b0_neededby: data.neededBy
+          ? new Date(data.neededBy).toISOString()
+          : undefined,
+        cr9b0_notes: data.notes?.trim() || undefined,
         cr9b0_orderdate: now.toISOString(),
         cr9b0_orderstatus: 930770000,
         statecode: 0,
@@ -66,14 +73,12 @@ export default function OrderModal({
           ? err.message
           : "Failed to submit the order. Please try again.",
       )
-    } finally {
-      setSubmitting(false)
     }
   }
 
   return (
     <Modal title="New Order" onClose={onClose}>
-      <form onSubmit={handleSubmit} className={shared.modalBody}>
+      <form onSubmit={handleSubmit(onSubmit)} className={shared.modalBody}>
         <div className={shared.formField}>
           <BaseInput
             label="Item"
@@ -90,21 +95,19 @@ export default function OrderModal({
             label="Quantity"
             type="number"
             min={1}
-            value={quantity}
-            onChange={(e) =>
-              setQuantity(Math.max(1, Number(e.target.value) || 1))
-            }
-            required
+            errorText={errors.quantity?.message}
+            {...register("quantity")}
           />
         </div>
 
         <div className={shared.formField}>
           <BaseInput
             id="order-needed-by"
-            label="Needed By"
+            label="Needed By (optional)"
             type="date"
-            value={neededBy}
-            onChange={(e) => setNeededBy(e.target.value)}
+            helperText="Must be today or later"
+            errorText={errors.neededBy?.message}
+            {...register("neededBy")}
           />
         </div>
 
@@ -113,32 +116,34 @@ export default function OrderModal({
             id="order-delivery-location"
             label="Delivery Location"
             type="text"
-            value={deliveryLocation}
-            onChange={(e) => setDeliveryLocation(e.target.value)}
             placeholder="e.g. Building 2, Floor 3"
-            required
+            errorText={errors.deliveryLocation?.message}
+            {...register("deliveryLocation")}
           />
         </div>
 
         <div className={shared.formField}>
           <BaseTextarea
             id="order-notes"
-            label="Notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            label="Notes (optional)"
             rows={3}
-            placeholder="Optional notes for the fulfillment team"
+            placeholder="e.g. Notes for the fulfillment team"
+            {...register("notes")}
           />
         </div>
 
         {error && <p className={shared.formError}>{error}</p>}
 
         <div className={shared.modalActions}>
-          <BaseButton variant="secondary" onClick={onClose} disabled={submitting}>
+          <BaseButton
+            variant="secondary"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
             Cancel
           </BaseButton>
-          <BaseButton type="submit" variant="primary" loading={submitting}>
-            {submitting ? "Submitting…" : "Submit Order"}
+          <BaseButton type="submit" variant="primary" loading={isSubmitting}>
+            {isSubmitting ? "Submitting…" : "Submit Order"}
           </BaseButton>
         </div>
       </form>
