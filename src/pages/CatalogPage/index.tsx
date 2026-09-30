@@ -11,6 +11,7 @@ import OrderModal from "./components/OrderModal"
 import BaseButton from "@/components/base/BaseButton"
 import BaseInput from "@/components/base/BaseInput"
 import Spinner from "@/components/shared/Spinner"
+import { useDebouncedValue } from "@/hooks/useDebouncedValue"
 import { selectStyles, type SelectOption } from "@/styles/reactSelectStyles"
 import styles from "./CatalogPage.module.css"
 import shared from "@/styles/shared.module.css"
@@ -52,6 +53,9 @@ export default function CatalogPage({
   const category = searchParams.get("category") ?? "all"
   const manageMode = searchParams.get("manage") === "1"
 
+  const [searchInput, setSearchInput] = useState(search)
+  const debouncedSearchInput = useDebouncedValue(searchInput, 400)
+
   function updateParams(updates: Record<string, string | null>) {
     setSearchParams(
       (prev) => {
@@ -68,6 +72,14 @@ export default function CatalogPage({
       { replace: true },
     )
   }
+
+  // Reflect the debounced input into the URL param that drives filtering,
+  // only once it settles rather than on every keystroke.
+  useEffect(() => {
+    if (debouncedSearchInput === search) return
+    updateParams({ q: debouncedSearchInput || null })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchInput])
 
   /*
   Converting loadItems to async/await trips the project's
@@ -193,8 +205,8 @@ export default function CatalogPage({
           type="search"
           className={shared.filterSearch}
           placeholder="Search by item name…"
-          value={search}
-          onChange={(e) => updateParams({ q: e.target.value || null })}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
           aria-label="Search catalog by item name"
         />
         <Select<SelectOption>
