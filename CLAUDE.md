@@ -12,15 +12,27 @@ Dataverse tables. Bootstrapped from the standard Vite React template and wired u
 ## Commands
 
 ```bash
-npm run dev      # vite dev server at http://localhost:5173
-npm run build    # tsc -b && vite build -> ./dist (buildPath in power.config.json)
-npm run lint      # eslint .
-npm run preview   # preview the production build
+npm run dev            # vite dev server at http://localhost:5173
+npm run build          # tsc -b && vite build -> ./dist (buildPath in power.config.json)
+npm run lint            # eslint .
+npm run preview         # preview the production build
+npm run test            # vitest run — always run before committing any change
+npm run test:watch      # vitest in watch mode
+npm run test:coverage   # vitest run --coverage (reporting only, no threshold gate yet)
 ```
 
-There is no test suite configured (no `test` script). Playwright is present only as a
-devDependency for headless UI driving (see `.claude/skills/run-raftestpowerapp/`), not
-for a test suite.
+Unit tests (Vitest + `@testing-library/react`) live under `src/__tests__/`, mirroring
+`src/`'s structure with flattened leaf names (e.g. `BaseButton.test.tsx`). Config is in
+`vitest.config.ts` (kept separate from `vite.config.ts` so the `powerApps()` build
+plugin never runs during tests) and `tsconfig.vitest.json` (kept separate from
+`tsconfig.app.json` so test files never enter the production build's type-check).
+Coverage is not fully built out yet — see **`docs/testing-plan.md`** for what's covered,
+what's next, and what's deliberately deferred (hooks/pages that call generated Dataverse
+services); update that file as work progresses and remove this pointer once it's done.
+Use the `create-power-app-react-tests` skill to add tests for a given file.
+
+Playwright is present only as a devDependency for headless UI driving (see
+`.claude/skills/run-raftestpowerapp/`), not for the unit test suite above.
 
 To run/screenshot the app end-to-end (headless browser driving, dev-server lifecycle,
 gotchas like `timeout` not existing on macOS), use the `run-raftestpowerapp` skill
