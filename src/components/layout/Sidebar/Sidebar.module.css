@@ -36,7 +36,13 @@
 }
 
 .sidebarIcon {
-  font-size: 1rem;
+  flex-shrink: 0;
+  color: var(--icon-color);
+  transition: color 0.15s;
+}
+
+.active .sidebarIcon {
+  color: currentColor;
 }
 
 @media (max-width: 860px) {
