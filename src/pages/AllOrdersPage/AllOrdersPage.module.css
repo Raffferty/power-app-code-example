@@ -20,6 +20,10 @@
   }
 }
 
+.orderIdSearch {
+  grid-column: 1 / -1;
+}
+
 .assignedToSelect {
   min-width: 250px;
   max-width: 300px;

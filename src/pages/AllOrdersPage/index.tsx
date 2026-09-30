@@ -12,6 +12,7 @@ import BaseInput from "@/components/base/BaseInput"
 import Spinner from "@/components/shared/Spinner"
 import Pagination from "@/components/shared/Pagination"
 import { scrollToTop } from "@/helpers/scrollToTop"
+import { useDebouncedValue } from "@/hooks/useDebouncedValue"
 import { selectStyles, type SelectOption } from "@/styles/reactSelectStyles"
 import styles from "./AllOrdersPage.module.css"
 import shared from "@/styles/shared.module.css"
@@ -82,6 +83,9 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   const assignedToFilter = searchParams.get("assignedTo") ?? "all"
   const dateFrom = searchParams.get("from") ?? ""
   const dateTo = searchParams.get("to") ?? ""
+  const orderIdFilter = searchParams.get("orderId") ?? ""
+  const [orderIdInput, setOrderIdInput] = useState(orderIdFilter)
+  const debouncedOrderIdInput = useDebouncedValue(orderIdInput, 400)
   const pageParam = Number(searchParams.get("page") ?? "1")
   const page =
     Number.isFinite(pageParam) && pageParam >= 1 ? Math.floor(pageParam) : 1
@@ -128,6 +132,13 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     [setSearchParams],
   )
 
+  // Reflect the debounced input into the URL param that actually drives the
+  // Dataverse query (only once it settles, not on every keystroke).
+  useEffect(() => {
+    if (debouncedOrderIdInput.trim() === orderIdFilter) return
+    updateParams({ orderId: debouncedOrderIdInput.trim() || null })
+  }, [debouncedOrderIdInput, orderIdFilter, updateParams])
+
   /*
   Converting loadPage to async/await trips the project's
   react-hooks/set-state-in-effect lint rule: it
@@ -156,6 +167,10 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
         )
       if (dateTo)
         filterParts.push(`cr9b0_orderdate le ${new Date(dateTo).toISOString()}`)
+      if (orderIdFilter)
+        filterParts.push(
+          `contains(cr9b0_orderid,'${orderIdFilter.replace(/'/g, "''")}')`,
+        )
 
       return Cr9b0_internalordersService.getAll({
         filter: filterParts.length ? filterParts.join(" and ") : undefined,
@@ -187,7 +202,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
         })
         .finally(() => busySetter(false))
     },
-    [statusFilter, assignedToFilter, dateFrom, dateTo],
+    [statusFilter, assignedToFilter, dateFrom, dateTo, orderIdFilter],
   )
 
   // loadPage/updateParams are read via refs (not listed as effect deps) so this
@@ -208,6 +223,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
       assignedToFilter,
       dateFrom,
       dateTo,
+      orderIdFilter,
       refreshKey,
     ])
     const isMountOrReplay =
@@ -237,7 +253,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     persistPageTokens()
     updateParamsRef.current({ page: null })
     loadPageRef.current(1, undefined, setLoading)
-  }, [statusFilter, assignedToFilter, dateFrom, dateTo, refreshKey])
+  }, [statusFilter, assignedToFilter, dateFrom, dateTo, orderIdFilter, refreshKey])
 
   function goToPage(nextPage: number, token: string | undefined) {
     setPageLoading(true)
@@ -371,7 +387,14 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
   }
 
   function clearFilters() {
-    updateParams({ status: null, assignedTo: null, from: null, to: null })
+    setOrderIdInput("")
+    updateParams({
+      status: null,
+      assignedTo: null,
+      from: null,
+      to: null,
+      orderId: null,
+    })
   }
 
   return (
@@ -389,7 +412,8 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
           {(statusFilter !== "all" ||
             assignedToFilter !== "all" ||
             dateFrom ||
-            dateTo) && (
+            dateTo ||
+            orderIdFilter) && (
             <BaseButton variant="secondary" onClick={clearFilters}>
               Clear filters
             </BaseButton>
@@ -398,6 +422,15 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
       </div>
 
       <div className={styles.filterGrid}>
+        <BaseInput
+          type="search"
+          className={styles.orderIdSearch}
+          placeholder="Search by order ID…"
+          value={orderIdInput}
+          onChange={(e) => setOrderIdInput(e.target.value)}
+          aria-label="Search by order ID"
+        />
+
         <Select<SelectOption>
           className={shared.filterSelectWrapper}
           classNamePrefix="rs"
