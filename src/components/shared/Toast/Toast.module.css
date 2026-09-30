@@ -6,8 +6,8 @@
   align-items: center;
   gap: 0.55rem;
   padding: 0.85rem 1.25rem;
-  background: #1e2430;
-  color: white;
+  background: var(--color-surface-inverse);
+  color: var(--color-text-inverse);
   border-radius: 8px;
   box-shadow: var(--shadow-md);
   font-size: 0.9rem;
@@ -15,6 +15,6 @@
 }
 
 .toastIcon {
-  color: #32d583;
+  color: var(--color-success);
   font-weight: 700;
 }

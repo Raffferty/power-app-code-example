@@ -75,8 +75,8 @@
 .chartTooltip {
   position: absolute;
   transform: translate(-50%, -115%);
-  background: #1e2430;
-  color: white;
+  background: var(--color-surface-inverse);
+  color: var(--color-text-inverse);
   padding: 0.4rem 0.65rem;
   border-radius: 6px;
   font-size: 0.78rem;
@@ -90,7 +90,7 @@
 }
 
 .chartTooltipValue {
-  color: #d0d5dd;
+  color: var(--color-border-strong);
 }
 
 /* Donut chart */

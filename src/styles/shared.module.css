@@ -13,7 +13,7 @@
 }
 
 .stateError {
-  color: #b42318;
+  color: var(--color-danger-text);
 }
 
 /* Page header */
@@ -97,7 +97,7 @@
 
 .formError {
   margin: 0;
-  color: #b42318;
+  color: var(--color-danger-text);
   font-size: 0.85rem;
 }
 

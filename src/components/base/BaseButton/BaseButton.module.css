@@ -39,7 +39,7 @@
 /* Primary: filled */
 .primary {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-text-inverse);
 }
 
 .primary:hover:not(:disabled) {
@@ -47,8 +47,8 @@
 }
 
 .primary:disabled {
-  background: #d0d5dd;
-  color: #ffffff;
+  background: var(--color-border-strong);
+  color: var(--color-text-inverse);
 }
 
 /* Secondary: outline */
@@ -64,9 +64,9 @@
 }
 
 .secondary:disabled {
-  background: #d0d5dd;
+  background: var(--color-border-strong);
   border-color: transparent;
-  color: #ffffff;
+  color: var(--color-text-inverse);
 }
 
 /* Ghost: borderless, for low-emphasis/icon actions (e.g. a modal close button) */
