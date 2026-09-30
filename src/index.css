@@ -49,7 +49,17 @@
   --shadow-md: 0 4px 12px rgba(var(--shadow-color), 0.08);
 }
 
-/* Dark theme — the OS-preference case, overridden by an explicit "light" pick */
+/* 
+Dark theme — the OS-preference case, overridden by an explicit "light" pick
+
+This fires when the OS/browser itself is in dark mode, 
+and the user hasn't explicitly forced Light (data-theme="light" isn't set). 
+It's how "System" setting works: 
+ThemeProvider doesn't set any data-theme attribute at all when setting === "system" 
+— it just lets this media query decide, matching whatever the OS reports. 
+The :not([data-theme="light"]) guard exists so that if the user did explicitly pick Light while their OS is dark, 
+this block doesn't override that explicit choice.
+*/
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
@@ -89,7 +99,34 @@
   }
 }
 
-/* Dark theme — the explicit toggle case, wins over both the OS preference and light default */
+/* 
+Dark theme — the explicit toggle case, wins over both the OS preference and light default
+
+This fires when the user explicitly picks "Dark" in the toggle, regardless of what the OS preference is. 
+ThemeProvider's applyDocumentTheme sets data-theme="dark" on <html> in that case. 
+This block has to exist separately because someone could be on a light-mode OS 
+and still explicitly want the app in dark — the media query alone would never match that case.
+*/
+
+/* 
+color-scheme: dark; 
+
+doesn't touch your own CSS-variable-styled elements at all 
+— it's a hint to the browser's own UA-drawn chrome telling it "render native widgets in dark, not light."
+
+Concretely, in this app that affects things you never wrote CSS for: 
+native <input type="date"> pickers, 
+checkboxes/radios, 
+scrollbars, 
+the default focus ring color, 
+and text-selection highlight color. 
+
+Without color-scheme: dark, the browser still assumes the page is light by default, 
+so those native controls would render with a white background/black text/light scrollbar 
+even while everything else around them is dark — a jarring mismatch. 
+
+Setting it opts the page into the browser's dark native-widget palette so those pieces match automatically.
+*/
 :root[data-theme="dark"] {
   color-scheme: dark;
 
