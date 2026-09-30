@@ -1,4 +1,5 @@
-import { CATEGORICAL_COLORS } from "../colors"
+import { getCategoricalColors } from "../colors"
+import { useTheme } from "@/hooks/useTheme"
 import styles from "../charts.module.css"
 
 interface BarChartProps {
@@ -7,13 +8,15 @@ interface BarChartProps {
 }
 
 export default function BarChart({ data, ariaLabel }: BarChartProps) {
+  const { resolvedTheme } = useTheme()
+  const categoricalColors = getCategoricalColors(resolvedTheme)
   const max = Math.max(1, ...data.map((d) => d.value))
 
   return (
     <div className={styles.hbarChart} role="img" aria-label={ariaLabel}>
       {data.map((d, i) => {
         const pct = (d.value / max) * 100
-        const color = CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]
+        const color = categoricalColors[i % categoricalColors.length]
         return (
           <div
             className={styles.hbarRow}

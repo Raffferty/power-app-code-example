@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { CHART_INK } from "../colors"
+import { getCategoricalColors, getChartInk } from "../colors"
+import { useTheme } from "@/hooks/useTheme"
 import styles from "../charts.module.css"
 import shared from "@/styles/shared.module.css"
 
@@ -14,9 +15,11 @@ const PAD_LEFT = 30
 const PAD_RIGHT = 12
 const PAD_TOP = 16
 const PAD_BOTTOM = 24
-const LINE_COLOR = "#2a78d6"
 
 export default function LineChart({ data, ariaLabel }: LineChartProps) {
+  const { resolvedTheme } = useTheme()
+  const chartInk = getChartInk(resolvedTheme)
+  const lineColor = getCategoricalColors(resolvedTheme)[0]
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
   if (data.length === 0) {
@@ -75,7 +78,7 @@ export default function LineChart({ data, ariaLabel }: LineChartProps) {
             x2={WIDTH - PAD_RIGHT}
             y1={y}
             y2={y}
-            stroke={CHART_INK.gridline}
+            stroke={chartInk.gridline}
             strokeWidth={1}
           />
         ))}
@@ -84,14 +87,14 @@ export default function LineChart({ data, ariaLabel }: LineChartProps) {
           x2={WIDTH - PAD_RIGHT}
           y1={PAD_TOP + plotH}
           y2={PAD_TOP + plotH}
-          stroke={CHART_INK.baseline}
+          stroke={chartInk.baseline}
           strokeWidth={1}
         />
-        <path d={areaPath} fill={LINE_COLOR} opacity={0.12} stroke="none" />
+        <path d={areaPath} fill={lineColor} opacity={0.12} stroke="none" />
         <path
           d={linePath}
           fill="none"
-          stroke={LINE_COLOR}
+          stroke={lineColor}
           strokeWidth={2}
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -102,7 +105,7 @@ export default function LineChart({ data, ariaLabel }: LineChartProps) {
             x2={hovered.x}
             y1={PAD_TOP}
             y2={PAD_TOP + plotH}
-            stroke={CHART_INK.secondary}
+            stroke={chartInk.secondary}
             strokeWidth={1}
             strokeDasharray="3 3"
           />
@@ -112,8 +115,8 @@ export default function LineChart({ data, ariaLabel }: LineChartProps) {
             cx={hovered.x}
             cy={hovered.y}
             r={4}
-            fill={LINE_COLOR}
-            stroke="#fff"
+            fill={lineColor}
+            stroke={chartInk.surface}
             strokeWidth={1.5}
           />
         )}

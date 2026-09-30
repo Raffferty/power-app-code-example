@@ -1,3 +1,5 @@
+import { getCategoricalColors } from "../colors"
+import { useTheme } from "@/hooks/useTheme"
 import styles from "../charts.module.css"
 import shared from "@/styles/shared.module.css"
 
@@ -5,9 +7,11 @@ interface TopItemsListProps {
   data: Array<{ label: string; value: number }>
 }
 
-const BAR_COLOR = "#2a78d6" // magnitude ranking of one entity type: single flat hue, not per-item identity
-
 export default function TopItemsList({ data }: TopItemsListProps) {
+  const { resolvedTheme } = useTheme()
+  // magnitude ranking of one entity type: single flat hue, not per-item identity
+  const barColor = getCategoricalColors(resolvedTheme)[0]
+
   if (data.length === 0) {
     return <p className={shared.stateMessage}>No orders yet.</p>
   }
@@ -35,7 +39,7 @@ export default function TopItemsList({ data }: TopItemsListProps) {
             <div className={styles.hbarTrack}>
               <div
                 className={styles.hbarFill}
-                style={{ width: `${pct}%`, background: BAR_COLOR }}
+                style={{ width: `${pct}%`, background: barColor }}
               />
             </div>
             <span className={styles.hbarValue}>{d.value}</span>

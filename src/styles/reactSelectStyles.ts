@@ -57,7 +57,7 @@ export const selectStyles: StylesConfig<SelectOption, false> = {
       : state.isFocused
         ? "var(--color-bg)"
         : "transparent",
-    color: state.isSelected ? "#fff" : "var(--color-text)",
+    color: state.isSelected ? "var(--color-text-inverse)" : "var(--color-text)",
     cursor: "pointer",
   }),
 }

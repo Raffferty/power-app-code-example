@@ -1,4 +1,5 @@
 import { getInitials } from "@/types";
+import ThemeToggle from "./ThemeToggle";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
@@ -13,6 +14,7 @@ export default function Header({ userName }: HeaderProps) {
         <span className={styles.brandTitle}>Supply Hub</span>
       </div>
       <div className={styles.appHeaderUser}>
+        <ThemeToggle />
         <span className={styles.userAvatar}>{getInitials(userName)}</span>
         <span className={styles.userName}>{userName}</span>
       </div>

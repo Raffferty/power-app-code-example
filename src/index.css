@@ -49,6 +49,84 @@
   --shadow-md: 0 4px 12px rgba(var(--shadow-color), 0.08);
 }
 
+/* Dark theme — the OS-preference case, overridden by an explicit "light" pick */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --color-primary: #6366f1;
+    --color-primary-dark: #818cf8;
+    --color-primary-light: rgba(99, 102, 241, 0.18);
+    --color-surface: #1a1a19;
+    --color-bg: #0d0d0d;
+    --color-border: #2c2c2a;
+    --color-border-strong: #383835;
+    --color-text: #ffffff;
+    --color-text-muted: #c3c2b7;
+
+    --color-text-inverse: #ffffff;
+    --color-surface-inverse: #1e2430;
+
+    --color-overlay: rgba(0, 0, 0, 0.6);
+    --color-primary-soft: rgba(99, 102, 241, 0.35);
+    --color-inverse-soft: rgba(255, 255, 255, 0.35);
+
+    --color-success-bg: rgba(50, 213, 131, 0.16);
+    --color-success-text: #4ade80;
+    --color-success: #32d583;
+    --color-warning-bg: rgba(250, 178, 25, 0.16);
+    --color-warning-text: #fbbf24;
+    --color-danger-bg: rgba(248, 113, 113, 0.16);
+    --color-danger-text: #f87171;
+    --color-info-bg: rgba(56, 152, 231, 0.16);
+    --color-info-text: #60a5fa;
+    --color-accent-bg: rgba(144, 133, 233, 0.16);
+    --color-accent-text: #a78bfa;
+    --color-neutral-bg: rgba(255, 255, 255, 0.08);
+    --color-neutral-text: #c3c2b7;
+
+    --shadow-color: 0, 0, 0;
+  }
+}
+
+/* Dark theme — the explicit toggle case, wins over both the OS preference and light default */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-primary: #6366f1;
+  --color-primary-dark: #818cf8;
+  --color-primary-light: rgba(99, 102, 241, 0.18);
+  --color-surface: #1a1a19;
+  --color-bg: #0d0d0d;
+  --color-border: #2c2c2a;
+  --color-border-strong: #383835;
+  --color-text: #ffffff;
+  --color-text-muted: #c3c2b7;
+
+  --color-text-inverse: #ffffff;
+  --color-surface-inverse: #1e2430;
+
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --color-primary-soft: rgba(99, 102, 241, 0.35);
+  --color-inverse-soft: rgba(255, 255, 255, 0.35);
+
+  --color-success-bg: rgba(50, 213, 131, 0.16);
+  --color-success-text: #4ade80;
+  --color-success: #32d583;
+  --color-warning-bg: rgba(250, 178, 25, 0.16);
+  --color-warning-text: #fbbf24;
+  --color-danger-bg: rgba(248, 113, 113, 0.16);
+  --color-danger-text: #f87171;
+  --color-info-bg: rgba(56, 152, 231, 0.16);
+  --color-info-text: #60a5fa;
+  --color-accent-bg: rgba(144, 133, 233, 0.16);
+  --color-accent-text: #a78bfa;
+  --color-neutral-bg: rgba(255, 255, 255, 0.08);
+  --color-neutral-text: #c3c2b7;
+
+  --shadow-color: 0, 0, 0;
+}
+
 * {
   box-sizing: border-box;
 }

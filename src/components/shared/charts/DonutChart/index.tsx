@@ -1,4 +1,5 @@
-import { CATEGORICAL_COLORS, CHART_INK } from "../colors"
+import { getCategoricalColors, getChartInk } from "../colors"
+import { useTheme } from "@/hooks/useTheme"
 import styles from "../charts.module.css"
 import shared from "@/styles/shared.module.css"
 
@@ -34,6 +35,9 @@ function arcPath(startDeg: number, endDeg: number) {
 }
 
 export default function DonutChart({ data, ariaLabel }: DonutChartProps) {
+  const { resolvedTheme } = useTheme()
+  const categoricalColors = getCategoricalColors(resolvedTheme)
+  const chartInk = getChartInk(resolvedTheme)
   const total = data.reduce((sum, d) => sum + d.value, 0)
 
   if (total === 0) {
@@ -52,7 +56,7 @@ export default function DonutChart({ data, ariaLabel }: DonutChartProps) {
     const end = cursor + sweep - (sweep > GAP_DEG ? GAP_DEG / 2 : 0)
     return {
       ...d,
-      color: CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length],
+      color: categoricalColors[i % categoricalColors.length],
       path: arcPath(start, end),
       pct: Math.round((d.value / total) * 100),
     }
@@ -76,7 +80,7 @@ export default function DonutChart({ data, ariaLabel }: DonutChartProps) {
           y={CENTER - 6}
           textAnchor="middle"
           className={styles.donutTotalValue}
-          fill={CHART_INK.primary}
+          fill={chartInk.primary}
         >
           {total}
         </text>
@@ -85,7 +89,7 @@ export default function DonutChart({ data, ariaLabel }: DonutChartProps) {
           y={CENTER + 14}
           textAnchor="middle"
           className={styles.donutTotalLabel}
-          fill={CHART_INK.muted}
+          fill={chartInk.muted}
         >
           orders
         </text>
