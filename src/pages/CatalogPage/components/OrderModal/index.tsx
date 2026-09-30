@@ -74,8 +74,8 @@ export default function OrderModal({
     <Modal title="New Order" onClose={onClose}>
       <form onSubmit={handleSubmit} className={shared.modalBody}>
         <div className={shared.formField}>
-          <label>Item</label>
           <BaseInput
+            label="Item"
             type="text"
             value={item.cr9b0_itemname ?? ""}
             readOnly
@@ -84,9 +84,9 @@ export default function OrderModal({
         </div>
 
         <div className={shared.formField}>
-          <label htmlFor="order-quantity">Quantity</label>
           <BaseInput
             id="order-quantity"
+            label="Quantity"
             type="number"
             min={1}
             value={quantity}
@@ -98,9 +98,9 @@ export default function OrderModal({
         </div>
 
         <div className={shared.formField}>
-          <label htmlFor="order-needed-by">Needed By</label>
           <BaseInput
             id="order-needed-by"
+            label="Needed By"
             type="date"
             value={neededBy}
             onChange={(e) => setNeededBy(e.target.value)}
@@ -108,9 +108,9 @@ export default function OrderModal({
         </div>
 
         <div className={shared.formField}>
-          <label htmlFor="order-delivery-location">Delivery Location</label>
           <BaseInput
             id="order-delivery-location"
+            label="Delivery Location"
             type="text"
             value={deliveryLocation}
             onChange={(e) => setDeliveryLocation(e.target.value)}

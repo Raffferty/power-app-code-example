@@ -84,9 +84,9 @@ export default function CatalogItemModal({
     <Modal title={item ? "Edit Item" : "New Item"} onClose={onClose}>
       <form onSubmit={handleSubmit} className={shared.modalBody}>
         <div className={shared.formField}>
-          <label htmlFor="item-name">Item Name</label>
           <BaseInput
             id="item-name"
+            label="Item Name"
             type="text"
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
