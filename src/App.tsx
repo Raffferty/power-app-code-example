@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import styles from "./App.module.css"
 import shared from "./styles/shared.module.css"
 import Header from "./components/layout/Header"
 import Sidebar from "./components/layout/Sidebar"
-import CatalogPage from "./pages/CatalogPage"
-import MyOrdersPage from "./pages/MyOrdersPage"
-import AllOrdersPage from "./pages/AllOrdersPage"
-import ReportsPage from "./pages/ReportsPage"
 import Toast from "./components/shared/Toast"
 import ProtectedRoute from "./components/guards/ProtectedRoute"
 import { useCurrentUser } from "./hooks/useCurrentUser"
 import { useSecurityContext } from "./hooks/useSecurityContext"
+
+const CatalogPage = lazy(() => import("./pages/CatalogPage"))
+const MyOrdersPage = lazy(() => import("./pages/MyOrdersPage"))
+const AllOrdersPage = lazy(() => import("./pages/AllOrdersPage"))
+const ReportsPage = lazy(() => import("./pages/ReportsPage"))
 
 // The player embeds this app in an iframe with a fixed src, so a reload of the
 // player page recreates the iframe from that fixed URL and wipes the hash —
@@ -90,46 +91,48 @@ export default function App() {
       <div className={styles.appBody}>
         <Sidebar isOrderAdmin={isOrderAdmin} />
         <main className={styles.appContent}>
-          <Routes>
-            <Route path="/" element={<RootRedirect />} />
-            <Route
-              path="/catalog"
-              element={
-                <CatalogPage
-                  onOrderSubmitted={handleOrderSubmitted}
-                  isOrderAdmin={isOrderAdmin}
-                  currentUserEmail={user.userPrincipalName ?? ""}
-                  onNotify={setToastMessage}
-                />
-              }
-            />
-            <Route
-              path="/orders"
-              element={
-                <MyOrdersPage
-                  currentSystemUserId={systemUserId ?? ""}
-                  refreshKey={ordersRefreshKey}
-                />
-              }
-            />
-            <Route
-              path="/all-orders"
-              element={
-                <ProtectedRoute allowed={isOrderAdmin} redirectTo="/catalog">
-                  <AllOrdersPage refreshKey={ordersRefreshKey} />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <ProtectedRoute allowed={isOrderAdmin} redirectTo="/catalog">
-                  <ReportsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<Navigate to="/catalog" replace />} />
-          </Routes>
+          <Suspense fallback={<p className={shared.stateMessage}>Loading…</p>}>
+            <Routes>
+              <Route path="/" element={<RootRedirect />} />
+              <Route
+                path="/catalog"
+                element={
+                  <CatalogPage
+                    onOrderSubmitted={handleOrderSubmitted}
+                    isOrderAdmin={isOrderAdmin}
+                    currentUserEmail={user.userPrincipalName ?? ""}
+                    onNotify={setToastMessage}
+                  />
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <MyOrdersPage
+                    currentSystemUserId={systemUserId ?? ""}
+                    refreshKey={ordersRefreshKey}
+                  />
+                }
+              />
+              <Route
+                path="/all-orders"
+                element={
+                  <ProtectedRoute allowed={isOrderAdmin} redirectTo="/catalog">
+                    <AllOrdersPage refreshKey={ordersRefreshKey} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/reports"
+                element={
+                  <ProtectedRoute allowed={isOrderAdmin} redirectTo="/catalog">
+                    <ReportsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/catalog" replace />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
       {toastMessage && (
