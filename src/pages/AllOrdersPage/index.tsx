@@ -440,6 +440,7 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
           type="date"
           className={shared.filterSelect}
           value={dateFrom}
+          max={dateTo || new Date().toLocaleDateString("en-CA")}
           onChange={(e) => updateParams({ from: e.target.value || null })}
           aria-label="Order date from"
           helperText="Date from:"
@@ -449,6 +450,8 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
           type="date"
           className={shared.filterSelect}
           value={dateTo}
+          min={dateFrom || undefined}
+          max={new Date().toLocaleDateString("en-CA")}
           onChange={(e) => updateParams({ to: e.target.value || null })}
           aria-label="Order date to"
           helperText="Date to:"

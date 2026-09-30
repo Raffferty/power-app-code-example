@@ -8,7 +8,11 @@ import BaseInput from "@/components/base/BaseInput"
 import BaseTextarea from "@/components/base/BaseTextarea"
 import Modal from "@/components/shared/Modal"
 import shared from "@/styles/shared.module.css"
-import { orderSchema, type OrderFormInput, type OrderFormValues } from "./schema"
+import {
+  orderSchema,
+  type OrderFormInput,
+  type OrderFormValues,
+} from "./schema"
 
 interface OrderModalProps {
   item: Cr9b0_catalogueitems
@@ -105,6 +109,7 @@ export default function OrderModal({
             id="order-needed-by"
             label="Needed By (optional)"
             type="date"
+            min={new Date().toLocaleDateString("en-CA")}
             helperText="Must be today or later"
             errorText={errors.neededBy?.message}
             {...register("neededBy")}
