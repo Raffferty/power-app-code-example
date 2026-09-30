@@ -17,7 +17,6 @@ Remove this file (and its `CLAUDE.md` pointer) once every section below is close
 - Explicit imports from `"vitest"` in every test file (no `globals: true`).
 - Assertions are behavior/attribute-based — no snapshot tests, no `jest-axe`/a11y
   scanning (scope for a possible future pass, not part of this plan).
-- **Always run `npm run test` before committing any change to this repo.**
 
 ## First slice (done)
 

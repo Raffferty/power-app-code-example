@@ -21,6 +21,12 @@ npm run test:watch      # vitest in watch mode
 npm run test:coverage   # vitest run --coverage (reporting only, no threshold gate yet)
 ```
 
+A committed Husky `pre-commit` hook (`.husky/pre-commit`, installed via
+`npm install --save-dev husky` + `npx husky init`, wired to run on `npm install` via the
+`prepare` script in `package.json`) runs `npm test` automatically on every `git commit`
+and blocks the commit if any test fails. Run the suite manually before committing anyway
+so you catch a failure before the hook does.
+
 Unit tests (Vitest + `@testing-library/react`) live under `src/__tests__/`, mirroring
 `src/`'s structure with flattened leaf names (e.g. `BaseButton.test.tsx`). Config is in
 `vitest.config.ts` (kept separate from `vite.config.ts` so the `powerApps()` build
