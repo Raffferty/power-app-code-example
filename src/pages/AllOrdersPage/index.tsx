@@ -21,7 +21,7 @@ interface AllOrdersPageProps {
   refreshKey: number
 }
 
-const PAGE_SIZE = 15
+const PAGE_SIZE = 5
 
 // Dataverse's Web API doesn't support OData $skip on entity-set queries -- paging is
 // forward-only via a $skiptoken (returned as `skipToken` on the result). This map tracks,
@@ -253,7 +253,14 @@ export default function AllOrdersPage({ refreshKey }: AllOrdersPageProps) {
     persistPageTokens()
     updateParamsRef.current({ page: null })
     loadPageRef.current(1, undefined, setLoading)
-  }, [statusFilter, assignedToFilter, dateFrom, dateTo, orderIdFilter, refreshKey])
+  }, [
+    statusFilter,
+    assignedToFilter,
+    dateFrom,
+    dateTo,
+    orderIdFilter,
+    refreshKey,
+  ])
 
   function goToPage(nextPage: number, token: string | undefined) {
     setPageLoading(true)
