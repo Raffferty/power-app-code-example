@@ -1,6 +1,12 @@
 import type { CSSProperties } from "react"
 import { NavLink } from "react-router-dom"
-import { BarChart3, ClipboardList, FolderOpen, Package } from "lucide-react"
+import {
+  BarChart3,
+  ClipboardList,
+  FolderOpen,
+  Package,
+  BriefcaseBusiness,
+} from "lucide-react"
 import { useTheme } from "@/hooks/useTheme"
 import { getCategoricalColors } from "@/components/shared/charts/colors"
 import styles from "./Sidebar.module.css"
@@ -24,6 +30,12 @@ const NAV_ITEMS: Array<{
     adminOnly: true,
   },
   { to: "/reports", icon: BarChart3, label: "Reports", adminOnly: true },
+  {
+    to: "/students",
+    icon: BriefcaseBusiness,
+    label: "Students",
+    adminOnly: true,
+  },
 ]
 
 export default function Sidebar({ isOrderAdmin }: SidebarProps) {

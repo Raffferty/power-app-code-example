@@ -1,24 +1,48 @@
 {
-  "name": "cr9b0_catalogueitem",
-  "title": "Catalogue Items",
+  "name": "cr9b0_students",
+  "title": "studentss",
   "schema": {
     "type": "array",
     "items": {
       "type": "object",
       "x-ms-dataverse-entity": true,
-      "x-ms-dataverse-entityset": "cr9b0_catalogueitems",
-      "x-ms-dataverse-primary-id": "cr9b0_catalogueitemid",
-      "x-ms-dataverse-primary-name": "cr9b0_itemname",
+      "x-ms-dataverse-entityset": "cr9b0_studentses",
+      "x-ms-dataverse-primary-id": "cr9b0_studentsid",
+      "x-ms-dataverse-primary-name": "cr9b0_id",
       "properties": {
-        "cr9b0_available": {
+        "cr9b0_course": {
           "type": "string",
-          "title": "Available",
-          "x-ms-dataverse-attribute": "cr9b0_available",
+          "title": "course",
+          "x-ms-dataverse-attribute": "cr9b0_course",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "cr9b0_course"
+        },
+        "cr9b0_email": {
+          "type": "string",
+          "title": "email",
+          "x-ms-dataverse-attribute": "cr9b0_email",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr9b0_email",
+          "maxLength": 100
+        },
+        "cr9b0_id": {
+          "type": "string",
+          "title": "ID",
+          "x-ms-dataverse-attribute": "cr9b0_id",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr9b0_ID",
+          "x-ms-dataverse-primary-name": true,
+          "maxLength": 100
+        },
+        "cr9b0_iscertified": {
+          "type": "string",
+          "title": "IsCertified",
+          "x-ms-dataverse-attribute": "cr9b0_iscertified",
           "x-ms-dataverse-type": "BooleanType",
-          "x-ms-schema-name": "cr9b0_Available",
+          "x-ms-schema-name": "cr9b0_IsCertified",
           "enum": [
-            "False",
-            "True"
+            "No",
+            "Yes"
           ],
           "x-ms-enum-values": [
             0,
@@ -28,79 +52,37 @@
             null,
             null
           ],
-          "x-ms-optionsetmetadataid": "2cd2d959-2a66-4b42-9b12-6b9be9180da8",
+          "x-ms-optionsetmetadataid": "af3c14e8-99c1-f111-aaad-70a8a5b07d02",
           "x-ms-isGlobal": false,
-          "x-ms-optionsetdisplayname": "Available",
+          "x-ms-optionsetdisplayname": "localEnumeration",
           "x-ms-optionSetType": "Boolean"
         },
-        "cr9b0_availablename": {
+        "cr9b0_iscertifiedname": {
           "type": "string",
-          "title": "cr9b0_availablename",
-          "x-ms-dataverse-attribute": "cr9b0_availablename",
+          "title": "cr9b0_iscertifiedname",
+          "x-ms-dataverse-attribute": "cr9b0_iscertifiedname",
           "x-ms-dataverse-type": "VirtualType",
-          "x-ms-schema-name": "cr9b0_availableName",
-          "x-ms-dataverse-attribute-of": "cr9b0_available",
+          "x-ms-schema-name": "cr9b0_iscertifiedName",
+          "x-ms-dataverse-attribute-of": "cr9b0_iscertified",
           "x-ms-read-only": true
         },
-        "cr9b0_catalogueitemid": {
+        "cr9b0_name": {
           "type": "string",
-          "title": "Catalogue Item",
-          "x-ms-dataverse-attribute": "cr9b0_catalogueitemid",
+          "title": "Name",
+          "x-ms-dataverse-attribute": "cr9b0_name",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr9b0_Name",
+          "maxLength": 100
+        },
+        "cr9b0_studentsid": {
+          "type": "string",
+          "title": "students",
+          "x-ms-dataverse-attribute": "cr9b0_studentsid",
           "x-ms-dataverse-type": "UniqueidentifierType",
-          "x-ms-schema-name": "cr9b0_CatalogueItemId",
+          "x-ms-schema-name": "cr9b0_studentsId",
           "x-ms-dataverse-primary-id": true,
           "required": true,
           "x-ms-keyType": "primary"
-        },
-        "cr9b0_category": {
-          "type": "string",
-          "title": "Category",
-          "x-ms-dataverse-attribute": "cr9b0_category",
-          "x-ms-dataverse-type": "PicklistType",
-          "x-ms-schema-name": "cr9b0_Category",
-          "enum": [
-            "Office supplies",
-            "IT equipment",
-            "Access & Security",
-            "Stationary",
-            "Other"
-          ],
-          "x-ms-enum-values": [
-            930770000,
-            930770001,
-            930770002,
-            930770003,
-            930770004
-          ],
-          "Color": [
-            null,
-            null,
-            null,
-            null,
-            null
-          ],
-          "x-ms-optionsetmetadataid": "f6087f14-8357-4ac0-9cff-b340ef047ee9",
-          "x-ms-isGlobal": false,
-          "x-ms-optionsetdisplayname": "Category",
-          "x-ms-optionSetType": "Picklist"
-        },
-        "cr9b0_categoryname": {
-          "type": "string",
-          "title": "cr9b0_categoryname",
-          "x-ms-dataverse-attribute": "cr9b0_categoryname",
-          "x-ms-dataverse-type": "VirtualType",
-          "x-ms-schema-name": "cr9b0_categoryName",
-          "x-ms-dataverse-attribute-of": "cr9b0_category",
-          "x-ms-read-only": true
-        },
-        "cr9b0_itemname": {
-          "type": "string",
-          "title": "Item Name",
-          "x-ms-dataverse-attribute": "cr9b0_itemname",
-          "x-ms-dataverse-type": "StringType",
-          "x-ms-schema-name": "cr9b0_ItemName",
-          "x-ms-dataverse-primary-name": true,
-          "maxLength": 850
         },
         "createdby": {
           "type": "string",
@@ -362,7 +344,7 @@
             null,
             null
           ],
-          "x-ms-optionsetmetadataid": "af68ea05-992a-4337-8885-fa9872045cee",
+          "x-ms-optionsetmetadataid": "7c3c14e8-99c1-f111-aaad-70a8a5b07d02",
           "x-ms-isGlobal": false,
           "x-ms-optionsetdisplayname": "Status",
           "x-ms-optionSetType": "State"
@@ -394,7 +376,7 @@
             null,
             null
           ],
-          "x-ms-optionsetmetadataid": "6fbb9f80-44a8-4376-98f2-44fcd8207db6",
+          "x-ms-optionsetmetadataid": "863c14e8-99c1-f111-aaad-70a8a5b07d02",
           "x-ms-isGlobal": false,
           "x-ms-optionsetdisplayname": "Status Reason",
           "x-ms-optionSetType": "Status"
@@ -432,7 +414,7 @@
         }
       },
       "required": [
-        "cr9b0_catalogueitemid",
+        "cr9b0_studentsid",
         "createdbyyominame",
         "createdonbehalfbyyominame",
         "modifiedbyyominame",

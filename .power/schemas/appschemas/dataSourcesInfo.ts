@@ -19,6 +19,13 @@ export const dataSourcesInfo = {
     "dataSourceType": "Dataverse",
     "apis": {}
   },
+  "cr9b0_studentses": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "cr9b0_studentsid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
+  },
   "roles": {
     "tableId": "",
     "version": "",

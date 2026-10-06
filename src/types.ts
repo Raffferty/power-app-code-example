@@ -1,6 +1,8 @@
 import type { Cr9b0_internalorders } from "./generated/models/Cr9b0_internalordersModel";
+import type { Cr9b0_studentses } from "./generated/models/Cr9b0_studentsesModel";
 
 export type OrderRecord = Cr9b0_internalorders;
+export type StudentRecord = Cr9b0_studentses;
 
 /**
  * Dataverse doesn't return separate "name" columns for lookups/optionsets from this

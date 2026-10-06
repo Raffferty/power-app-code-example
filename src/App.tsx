@@ -13,6 +13,7 @@ const CatalogPage = lazy(() => import("./pages/CatalogPage"))
 const MyOrdersPage = lazy(() => import("./pages/MyOrdersPage"))
 const AllOrdersPage = lazy(() => import("./pages/AllOrdersPage"))
 const ReportsPage = lazy(() => import("./pages/ReportsPage"))
+const StudentsPage = lazy(() => import("./pages/StudentsPage"))
 
 // The player embeds this app in an iframe with a fixed src, so a reload of the
 // player page recreates the iframe from that fixed URL and wipes the hash —
@@ -127,6 +128,14 @@ export default function App() {
                 element={
                   <ProtectedRoute allowed={isOrderAdmin} redirectTo="/catalog">
                     <ReportsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/students"
+                element={
+                  <ProtectedRoute allowed={isOrderAdmin} redirectTo="/catalog">
+                    <StudentsPage />
                   </ProtectedRoute>
                 }
               />

@@ -7,6 +7,7 @@
 export * as CommonModels from './models/CommonModels';
 export * as Cr9b0_catalogueitemsModel from './models/Cr9b0_catalogueitemsModel';
 export * as Cr9b0_internalordersModel from './models/Cr9b0_internalordersModel';
+export * as Cr9b0_studentsesModel from './models/Cr9b0_studentsesModel';
 export * as RolesModel from './models/RolesModel';
 export * as SendnotificationModel from './models/SendnotificationModel';
 export * as SystemusersModel from './models/SystemusersModel';
@@ -14,6 +15,7 @@ export * as SystemusersModel from './models/SystemusersModel';
 // Services
 export * from './services/Cr9b0_catalogueitemsService';
 export * from './services/Cr9b0_internalordersService';
+export * from './services/Cr9b0_studentsesService';
 export * from './services/RolesService';
 export * from './services/SendnotificationService';
 export * from './services/SystemusersService';

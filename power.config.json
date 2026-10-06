@@ -11,11 +11,11 @@
   "localAppUrl": "http://localhost:5173",
   "logoPath": "Default",
   "connectionReferences": {
-    "65ecbc10-068f-4f60-a2fe-44cf61ce8828": {
+    "6792ae73-53ce-465b-a5fb-91d7675b4a7b": {
       "id": "/providers/microsoft.powerapps/apis/shared_office365",
       "displayName": "Office 365 Outlook"
     },
-    "be2deef0-1d40-480e-8133-304b434dbdd7": {
+    "c8d7e5fd-ebd8-4050-a9b6-67e15fcd57db": {
       "id": "/providers/Microsoft.PowerApps/apis/shared_logicflows",
       "displayName": "Logic flows",
       "dataSources": [
@@ -26,7 +26,7 @@
         "workflowDisplayName": "Send notification",
         "workflowName": "0e184465-d7f2-6070-96c5-ed9187b31a32",
         "dependencies": {
-          "shared_office365": "65ecbc10-068f-4f60-a2fe-44cf61ce8828"
+          "shared_office365": "6792ae73-53ce-465b-a5fb-91d7675b4a7b"
         }
       }
     }
@@ -52,6 +52,11 @@
         "securityroles": {
           "entitySetName": "roles",
           "logicalName": "role",
+          "isHidden": false
+        },
+        "studentss": {
+          "entitySetName": "cr9b0_studentses",
+          "logicalName": "cr9b0_students",
           "isHidden": false
         }
       },
