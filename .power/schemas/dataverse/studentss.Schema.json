@@ -1,6 +1,6 @@
 {
   "name": "cr9b0_students",
-  "title": "studentss",
+  "title": "Students",
   "schema": {
     "type": "array",
     "items": {
@@ -324,6 +324,26 @@
             "owninguser"
           ],
           "x-ms-read-only": true
+        },
+        "raf_studentslevel": {
+          "type": "string",
+          "title": "Students Level",
+          "x-ms-dataverse-attribute": "raf_studentslevel",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "raf_StudentsLevel",
+          "x-ms-dataverse-navigation-properties": [
+            "raf_StudentsLevel"
+          ]
+        },
+        "raf_studentslevelname": {
+          "type": "string",
+          "title": "raf_studentslevelname",
+          "x-ms-dataverse-attribute": "raf_studentslevelname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "raf_StudentsLevelName",
+          "x-ms-dataverse-attribute-of": "raf_studentslevel",
+          "x-ms-read-only": true,
+          "maxLength": 850
         },
         "statecode": {
           "type": "string",

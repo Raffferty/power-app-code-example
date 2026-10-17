@@ -58,6 +58,11 @@
           "entitySetName": "cr9b0_studentses",
           "logicalName": "cr9b0_students",
           "isHidden": false
+        },
+        "studentslevels": {
+          "entitySetName": "raf_studentslevels",
+          "logicalName": "raf_studentslevel",
+          "isHidden": false
         }
       },
       "environmentVariableName": ""

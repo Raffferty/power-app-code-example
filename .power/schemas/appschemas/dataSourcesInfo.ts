@@ -26,6 +26,13 @@ export const dataSourcesInfo = {
     "dataSourceType": "Dataverse",
     "apis": {}
   },
+  "raf_studentslevels": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "raf_studentslevelid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
+  },
   "roles": {
     "tableId": "",
     "version": "",

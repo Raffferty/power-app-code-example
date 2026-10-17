@@ -22,6 +22,7 @@ export interface Cr9b0_studentsesBase {
   cr9b0_studentsid: string;
   importsequencenumber?: number;
   overriddencreatedon?: string;
+  "raf_StudentsLevel@odata.bind"?: string;
   statecode: Cr9b0_studentsesstatecode;
   statuscode?: Cr9b0_studentsesstatuscode;
   timezoneruleversionnumber?: number;
@@ -50,4 +51,6 @@ export interface Cr9b0_studentses extends Cr9b0_studentsesBase {
   _owningteam_value?: string;
   owninguser?: object;
   _owninguser_value?: string;
+  raf_studentslevel?: object;
+  _raf_studentslevel_value?: string;
 }
