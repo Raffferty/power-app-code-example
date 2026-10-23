@@ -67,5 +67,8 @@
       },
       "environmentVariableName": ""
     }
+  },
+  "appSettings": {
+    "showHeader": false
   }
 }
